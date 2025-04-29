@@ -1,4 +1,4 @@
-// This file is used to configure the database connection for Sequelize.
+// backend/config/database.js
 const config = require('./index');
 
 module.exports = {
