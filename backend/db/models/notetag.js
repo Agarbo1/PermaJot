@@ -8,26 +8,31 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      NoteTag.belongsTo(models.Note, { foreignKey: 'noteId' });
+      NoteTag.belongsTo(models.Tag, { foreignKey: 'tagId' });
     }
   }
-  NoteTag.init({
-    noteId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Notes',
-        key: 'id',
+  NoteTag.init(
+    {
+      noteId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'Notes',
+          key: 'id',
+        },
+      },
+      tagId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'Tags',
+          key: 'id',
+        },
       },
     },
-    tagId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Tags',
-        key: 'id',
-      },
-    },
-    sequelize,
-    modelName: 'NoteTag',
-  });
+    {
+      sequelize, 
+      modelName: 'NoteTag',
+    }
+  );
   return NoteTag;
 };
