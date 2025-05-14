@@ -1,10 +1,10 @@
-import { csrfFetch } from "./csrf";
+import { csrfFetch } from './csrf';
 
-const SET_NOTES = "notes/SET_NOTES";
-const ADD_NOTE = "notes/ADD_NOTE";
-const SET_NOTE_TAGS = "notes/SET_NOTE_TAGS";
-const UPDATE_NOTE = "notes/UPDATE_NOTE";
-const DELETE_NOTE = "notes/DELETE_NOTE";
+const SET_NOTES = 'notes/SET_NOTES';
+const ADD_NOTE = 'notes/ADD_NOTE';
+const SET_NOTE_TAGS = 'notes/SET_NOTE_TAGS';
+const UPDATE_NOTE = 'notes/UPDATE_NOTE';
+const DELETE_NOTE = 'notes/DELETE_NOTE';
 
 // Action Creators
 export const setNotes = (notes) => ({
@@ -31,12 +31,13 @@ export const deleteNote = (noteId) => ({
 
 // Thunk Action Creators
 export const fetchNotes = () => async (dispatch) => {
-  const response = await csrfFetch("/api/notes");
+  const response = await csrfFetch('/api/notes');
   if (response.ok) {
     const notes = await response.json();
     dispatch(setNotes(notes));
   }
 };
+
 export const fetchNoteDetails = (noteId) => async (dispatch) => {
   const response = await csrfFetch(`/api/notes/${noteId}`);
   if (response.ok) {
@@ -44,9 +45,10 @@ export const fetchNoteDetails = (noteId) => async (dispatch) => {
     dispatch(setNotes([note]));
   }
 };
+
 export const createNote = (note) => async (dispatch) => {
-  const response = await csrfFetch("/api/notes", {
-    method: "POST",
+  const response = await csrfFetch('/api/notes', {
+    method: 'POST',
     body: JSON.stringify(note),
   });
   if (response.ok) {
@@ -54,9 +56,10 @@ export const createNote = (note) => async (dispatch) => {
     dispatch(addNote(newNote));
   }
 };
+
 export const updateNoteDetails = (note) => async (dispatch) => {
   const response = await csrfFetch(`/api/notes/${note.id}`, {
-    method: "PUT",
+    method: 'PUT',
     body: JSON.stringify(note),
   });
   if (response.ok) {
@@ -64,14 +67,16 @@ export const updateNoteDetails = (note) => async (dispatch) => {
     dispatch(updateNote(updatedNote));
   }
 };
+
 export const deleteNoteDetails = (noteId) => async (dispatch) => {
   const response = await csrfFetch(`/api/notes/${noteId}`, {
-    method: "DELETE",
+    method: 'DELETE',
   });
   if (response.ok) {
     dispatch(deleteNote(noteId));
   }
 };
+
 export const fetchNoteTags = (noteId) => async (dispatch) => {
   const response = await csrfFetch(`/api/notes/${noteId}/tags`);
   if (response.ok) {
@@ -79,9 +84,10 @@ export const fetchNoteTags = (noteId) => async (dispatch) => {
     dispatch(setNoteTags(noteId, tags));
   }
 };
+
 export const addNoteTag = (noteId, tag) => async (dispatch) => {
   const response = await csrfFetch(`/api/notes/${noteId}/tags`, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify(tag),
   });
   if (response.ok) {
@@ -89,9 +95,10 @@ export const addNoteTag = (noteId, tag) => async (dispatch) => {
     dispatch(setNoteTags(noteId, newTag));
   }
 };
+
 export const removeNoteTag = (noteId, tagId) => async (dispatch) => {
   const response = await csrfFetch(`/api/notes/${noteId}/tags/${tagId}`, {
-    method: "DELETE",
+    method: 'DELETE',
   });
   if (response.ok) {
     dispatch(fetchNoteTags(noteId));
