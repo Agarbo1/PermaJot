@@ -6,7 +6,7 @@ const SET_NOTEBOOK_NOTES = "notebooks/SET_NOTEBOOK_NOTES";
 const UPDATE_NOTEBOOK = "notebooks/UPDATE_NOTEBOOK";
 const DELETE_NOTEBOOK = "notebooks/DELETE_NOTEBOOK";
 
-//  Action Creators
+// Action Creators
 export const setNotebooks = (notebooks) => ({
   type: SET_NOTEBOOKS,
   notebooks,
@@ -48,7 +48,7 @@ export const fetchNotebookDetails = (notebookId) => async (dispatch) => {
     const notebook = await response.json();
     dispatch(setNotebooks([notebook]));
   }
-}
+};
 
 export const createNotebook = (notebook) => async (dispatch) => {
   const response = await csrfFetch("/api/notebooks", {
@@ -58,6 +58,7 @@ export const createNotebook = (notebook) => async (dispatch) => {
   if (response.ok) {
     const newNotebook = await response.json();
     dispatch(addNotebook(newNotebook));
+    return newNotebook;
   }
 };
 
@@ -77,6 +78,7 @@ export const editNotebook = (notebook) => async (dispatch) => {
   if (response.ok) {
     const updatedNotebook = await response.json();
     dispatch(updateNotebook(updatedNotebook));
+    return updatedNotebook;
   }
 };
 
@@ -91,17 +93,28 @@ export const removeNotebook = (notebookId) => async (dispatch) => {
 
 // Initial State
 const initialState = {
-  notebooks: [],
+  notebooks: {},
   notebookNotes: {},
 };
 
 // Reducer
 const notebooksReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_NOTEBOOKS:
-      return { ...state, notebooks: action.notebooks };
+    case SET_NOTEBOOKS: {
+      const normalized = {};
+      action.notebooks.forEach(notebook => {
+        normalized[notebook.id] = notebook;
+      });
+      return { ...state, notebooks: normalized };
+    }
     case ADD_NOTEBOOK:
-      return { ...state, notebooks: [...state.notebooks, action.notebook] };
+      return {
+        ...state,
+        notebooks: {
+          ...state.notebooks,
+          [action.notebook.id]: action.notebook,
+        },
+      };
     case SET_NOTEBOOK_NOTES:
       return {
         ...state,
@@ -113,33 +126,19 @@ const notebooksReducer = (state = initialState, action) => {
     case UPDATE_NOTEBOOK:
       return {
         ...state,
-        notebooks: state.notebooks.map((notebook) =>
-          notebook.id === action.notebook.id ? action.notebook : notebook
-        ),
+        notebooks: {
+          ...state.notebooks,
+          [action.notebook.id]: action.notebook,
+        },
       };
-    case DELETE_NOTEBOOK:
-      return {
-        ...state,
-        notebooks: state.notebooks.filter(
-          (notebook) => notebook.id !== action.notebookId
-        ),
-      };
+    case DELETE_NOTEBOOK: {
+      const newNotebooks = { ...state.notebooks };
+      delete newNotebooks[action.notebookId];
+      return { ...state, notebooks: newNotebooks };
+    }
     default:
       return state;
   }
 };
-
-/**
- * helper func to normalize notebook data
- * @param {Array} notebooks - array of notebook objects
- * @returns {Object} - normalized notebook data
- */
-function _normalizeNotebooks(notebooks) {
-  const normalized = {};
-  notebooks.forEach((notebook) => {
-    normalized[notebook.id] = notebook;
-  });
-  return normalized;
-}
 
 export default notebooksReducer;

@@ -1,11 +1,17 @@
-//pages/TagsPage.jsx
+// src/pages/TagsPage.jsx
+import { useSelector } from 'react-redux';
 
 export default function TagsPage() {
+  const tags = useSelector((state) => Object.values(state.tags || {}));
+
   return (
-    <div>
-      <h1>Tags Page</h1>
-      <p>This is where you can manage your tags.</p>
+    <div className="tags-page">
+      <h2>Tags</h2>
+      <ul>
+        {tags.map(tag => (
+          <li key={tag.id}>{tag.name}</li>
+        ))}
+      </ul>
     </div>
   );
 }
-// This is a placeholder for the TagsPage component.

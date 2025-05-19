@@ -2,14 +2,18 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../../store/session';
-import './Modal.css';
+import '../Modal.css';
+import { useModal } from '../../context/Modal';
 
-const SignupFormModal = ({ closeModal }) => {
+const SignupFormModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { closeModal } = useModal();
 
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -19,11 +23,13 @@ const SignupFormModal = ({ closeModal }) => {
     setErrors({});
 
     if (password !== confirmPassword) {
-      setErrors({ confirmPassword: 'Passwords do not match' });
+      setErrors({ confirmPassword: "Passwords do not match" });
       return;
     }
 
-    const res = await dispatch(signup({ email, username, password }));
+    const res = await dispatch(
+      signup({ email, username, firstName, lastName, password })
+    );
 
     if (res && res.errors) {
       setErrors(res.errors);
@@ -60,6 +66,28 @@ const SignupFormModal = ({ closeModal }) => {
         {errors.username && <p className="error">{errors.username}</p>}
 
         <label>
+          First Name
+          <input
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
+        </label>
+        {errors.firstName && <p className="error">{errors.firstName}</p>}
+
+        <label>
+          Last Name
+          <input
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
+        </label>
+        {errors.lastName && <p className="error">{errors.lastName}</p>}
+
+        <label>
           Password
           <input
             type="password"
@@ -79,7 +107,9 @@ const SignupFormModal = ({ closeModal }) => {
             required
           />
         </label>
-        {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
+        {errors.confirmPassword && (
+          <p className="error">{errors.confirmPassword}</p>
+        )}
 
         <div className="modal-buttons">
           <button type="submit" className="submit-btn">Sign Up</button>

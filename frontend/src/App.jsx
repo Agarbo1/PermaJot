@@ -1,46 +1,70 @@
-// src/App.jsx
-import { useSelector } from 'react-redux';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { restoreUser } from './store/session';
 
-import Navigation from './components/Navigation';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import NotebookView from './pages/NotebookView';
-import NotFound from './pages/NotFound';
+import Navigation from './components/Navigation/Navigation';
 import ProtectedRoute from './components/ProtectedRoute';
+import Home from './components/pages/Home';
+import Dashboard from './components/pages/Dashboard.jsx';
+import NotebookView from './components/pages/NotebookView.jsx';
+import NoteView from './components/pages/NoteView.jsx';
 
-export default function App() {
-  const user = useSelector(state => state.session.user);
-
+function Layout({ isLoaded }) {
   return (
-    <BrowserRouter>
-      <Navigation />
-      <Routes>
-        {/* Public Route */}
-        <Route path="/" element={<Home />} />
-
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/notebooks/:notebookId"
-          element={
-            <ProtectedRoute>
-              <NotebookView />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Catch-all for unmatched routes */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <header>
+        <Navigation isLoaded={isLoaded} />
+      </header>
+      {isLoaded && <Outlet />}
+    </>
   );
 }
+
+function App() {
+  const dispatch = useDispatch();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    dispatch(restoreUser()).then(() => setIsLoaded(true));
+  }, [dispatch]);
+  const router = createBrowserRouter([
+    {
+      element: <Layout />,
+      children: [
+        {
+          path: '/',
+          element: <Home />,
+        },
+        {
+          path: '/dashboard',
+          element: (
+            <ProtectedRoute isLoaded={isLoaded}>
+              <Dashboard />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: '/notebooks/:notebookId',
+          element: (
+            <ProtectedRoute isLoaded={isLoaded}>
+              <NotebookView />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: '/notes/:noteId',
+          element: (
+            <ProtectedRoute isLoaded={isLoaded}>
+              <NoteView />
+            </ProtectedRoute>
+          ),
+        },
+      ],
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
+}
+
+export default App;

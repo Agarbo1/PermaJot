@@ -1,11 +1,18 @@
-//pages/NoteView.jsx
+// src/pages/NoteView.jsx
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function NoteView() {
+  const { noteId } = useParams();
+  const note = useSelector((state) => state.notes[noteId]);
+
+  if (!note) return <p>Note not found.</p>;
+
   return (
-    <div>
-      <h1>Note View</h1>
-      <p>This is where you can view and manage your notes.</p>
+    <div className="note-view">
+      <h2>{note.title || 'Untitled'}</h2>
+      <p>{note.content || 'No content'}</p>
+      <p>Last edited: {new Date(note.updatedAt).toLocaleString()}</p>
     </div>
   );
 }
-// This is a placeholder for the NoteView component.

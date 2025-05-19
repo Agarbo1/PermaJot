@@ -1,5 +1,18 @@
-// pages/Home.jsx
+// src/pages/Home.jsx
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
+
 export default function Home() {
-  return <h1>Welcome to PermaJot</h1>;
+  const sessionUser = useSelector((state) => state.session.user);
+
+  if (sessionUser) {
+    return <Navigate to="/dashboard" />;
+  }
+
+  return (
+    <div className="home-page">
+      <h1>Welcome to PermaJot</h1>
+      <p>Please log in or sign up to continue.</p>
+    </div>
+  );
 }
-// This is the main page of the application. It can be used to display a welcome message or any other content you want to show on the home page.

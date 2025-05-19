@@ -2,7 +2,8 @@ import { csrfFetch } from './csrf';
 
 const SET_NOTES = 'notes/SET_NOTES';
 const ADD_NOTE = 'notes/ADD_NOTE';
-const SET_NOTE_TAGS = 'notes/SET_NOTE_TAGS';
+const SET_NOTE_TAG = 'notes/SET_NOTE_TAGS';
+const REMOVE_NOTE_TAG = 'notes/REMOVE_NOTE_TAG';
 const UPDATE_NOTE = 'notes/UPDATE_NOTE';
 const DELETE_NOTE = 'notes/DELETE_NOTE';
 
@@ -16,7 +17,7 @@ export const addNote = (note) => ({
   note,
 });
 export const setNoteTags = (noteId, tags) => ({
-  type: SET_NOTE_TAGS,
+  type: SET_NOTE_TAG,
   noteId,
   tags,
 });
@@ -118,12 +119,22 @@ const notesReducer = (state = initialState, action) => {
       return { ...state, notes: action.notes };
     case ADD_NOTE:
       return { ...state, notes: [...state.notes, action.note] };
-    case SET_NOTE_TAGS:
+    case SET_NOTE_TAG:
       return {
         ...state,
         noteTags: {
           ...state.noteTags,
           [action.noteId]: action.tags,
+        },
+      };
+    case REMOVE_NOTE_TAG:
+      return {
+        ...state,
+        noteTags: {
+          ...state.noteTags,
+          [action.noteId]: state.noteTags[action.noteId].filter(
+            (tag) => tag.id !== action.tagId
+          ),
         },
       };
     case UPDATE_NOTE:

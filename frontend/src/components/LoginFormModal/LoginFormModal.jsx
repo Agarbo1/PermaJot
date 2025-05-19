@@ -1,76 +1,77 @@
 import { useState } from 'react';
+import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../../store/session';
-import '../Modal.css'; // Optional: your shared modal styles
+import { useModal } from '../../context/Modal';
+import './LoginForm.css';
 
-const LoginFormModal = ({ closeModal }) => {
+function LoginFormModal() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const [credential, setCredential] = useState('');
-  const [password, setPassword] = useState('');
+  const [credential, setCredential] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const { closeModal } = useModal();
+  const minUserChars = 4;
+  const minPassChars = 6;
 
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     setErrors({});
-
-    const res = await dispatch(login({ credential, password }));
-
-    if (res && res.errors) {
-      setErrors(res.errors);
-    } else {
-      closeModal();
-      navigate('/dashboard');
-    }
+    return dispatch(sessionActions.login({ credential, password }))
+      .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) {
+          setErrors(data.errors);
+        }
+      });
   };
 
-  const handleDemoLogin = async () => {
-    const res = await dispatch(login({ credential: 'demo@user.io', password: 'password' }));
-
-    if (res && res.errors) {
-      setErrors(res.errors);
-    } else {
-      closeModal();
-      navigate('/dashboard');
-    }
+  const handleDemoLogin = () => {
+    return dispatch(sessionActions.login({ credential: 'demoUser', password: 'password' }))
+      .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) {
+          setErrors(data.errors);
+        }
+      });
   };
+
+  const isButtonDisabled = credential.length < minUserChars || password.length < minPassChars;
 
   return (
-    <div className="modal">
-      <h2>Log In</h2>
+    <div className="login-form-container">
+    <div className="login-form">
+      <h1 className="login-form__title">Log In</h1>
       <form onSubmit={handleSubmit}>
-        <label>
-          Username or Email
+        <div className="login-form__input-container">
           <input
             type="text"
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
             required
           />
-        </label>
-        {errors.credential && <p className="error">{errors.credential}</p>}
-
-        <label>
-          Password
+          <label className={credential ? 'active' : ''}>Username or Email</label>
+        </div>
+        <div className="login-form__input-container">
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
-        {errors.password && <p className="error">{errors.password}</p>}
-
-        <div className="modal-buttons">
-          <button type="submit" className="submit-btn">Log In</button>
-          <button type="button" onClick={handleDemoLogin}>Demo User</button>
-          <button type="button" onClick={closeModal}>Cancel</button>
+          <label className={password ? 'active' : ''}>Password</label>
         </div>
+        {errors.credential && (
+          <p className="login-form__error">{errors.credential}</p>
+        )}
+        <button type="submit" disabled={isButtonDisabled}>Log In</button>
       </form>
+      <button className="login-form__demo-user" onClick={handleDemoLogin}>Log In as Demo User</button>
+    </div>
     </div>
   );
-};
+}
 
 export default LoginFormModal;
