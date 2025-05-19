@@ -74,34 +74,23 @@ export const toggleTaskStatus = (taskId) => async (dispatch) => {
   }
 };
 // Reducer
-const initialState = {
-  tasks: [],
-};
+const initialState = [];
 const tasksReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_TASKS:
-      return { ...state, tasks: action.tasks };
+      return action.tasks;
     case ADD_TASK:
-      return { ...state, tasks: [...state.tasks, action.task] };
+      return [...state, action.task];
     case UPDATE_TASK:
-      return {
-        ...state,
-        tasks: state.tasks.map((task) =>
-          task.id === action.task.id ? action.task : task
-        ),
-      };
+      return state.map((task) =>
+        task.id === action.task.id ? action.task : task
+      );
     case DELETE_TASK:
-      return {
-        ...state,
-        tasks: state.tasks.filter((task) => task.id !== action.taskId),
-      };
+      return state.filter((task) => task.id !== action.taskId);
     case TOGGLE_TASK:
-      return {
-        ...state,
-        tasks: state.tasks.map((task) =>
-          task.id === action.taskId ? { ...task, isCompleted: !task.isCompleted } : task
-        ),
-      };
+      return state.map((task) =>
+        task.id === action.taskId ? { ...task, isCompleted: !task.isCompleted } : task
+      );
     default:
       return state;
   }

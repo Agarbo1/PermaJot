@@ -1,5 +1,5 @@
 // src/components/TaskForm/TaskForm.jsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function TaskForm({ task = {}, onSubmit, onCancel }) {
   const [description, setDescription] = useState(task.description || '');

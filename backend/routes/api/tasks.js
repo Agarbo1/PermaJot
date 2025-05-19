@@ -92,7 +92,7 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
     return res.status(404).json({ message: 'Task not found' });
   }
 
-  task.completed = true;
+  task.isCompleted = true;
   await task.save();
 
   res.json({ task });

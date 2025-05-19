@@ -26,7 +26,7 @@ const handleCheckboxChange = (task) => {
       <h3>Tasks</h3>
       <ul>
         {tasks.length === 0 && <p>No tasks yet!</p>}
-        {incomplete.length === 0 && <p>All tasks completed!</p>}
+        {incomplete.length === 0 && completed.length > 0 && <p>All tasks completed!</p>}
         {incomplete.map(task => (
           <li key={task.id}>
             <label>
