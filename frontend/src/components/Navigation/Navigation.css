@@ -1,8 +1,94 @@
 header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  z-index: 1000;
   background-color: #1a1a1a;
-  padding: 1rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 2rem;
   border-bottom: 1px solid #333;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #e53935;
+}
+
+.nav-logo img {
+  height: 32px;
+  width: 32px;
+  object-fit: contain;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: #eee;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+}
+
+.nav-links a:hover {
+  color: #e53935;
+}
+
+.nav-links .active {
+  color: #e53935;
+}
+
+.nav-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.nav-profile img {
+  border-radius: 50%;
+  height: 32px;
+  width: 32px;
+}
+
+.nav-dropdown {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  min-width: 150px;
+  z-index: 10;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nav-dropdown a,
+.nav-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: #eee;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.nav-dropdown a:hover,
+.nav-dropdown button:hover {
+  background-color: #2a2a2a;
+  color: #e53935;
 }

@@ -80,4 +80,18 @@ app.use((err, _req, res, _next) => {
   });
 });
 
+const path = require('path');
+
+// Serve React frontend for all other routes
+app.use((req, res, next) => {
+  if (req.method === 'GET' && !req.path.startsWith('/api')) {
+    res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
+  } else {
+    next();
+  }
+});
+// Serve static files from the React frontend app
+app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
+
+
 module.exports = app;

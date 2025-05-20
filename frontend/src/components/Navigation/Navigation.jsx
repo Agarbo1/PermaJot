@@ -11,7 +11,7 @@ import SignupFormModal from '../SignupFormModal/SignupFormModal';
 export default function Navigation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector(state => state.session.user);
+  const user = useSelector((state) => state.session.user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { setModalContent } = useModal();
@@ -27,11 +27,16 @@ export default function Navigation() {
   return (
     <nav className="nav-container">
       <NavLink to="/dashboard" className="nav-logo">
-        <img src="/notebook-svgrepo-com.svg" alt="PermaJot" />
-        <span>PermaJot</span>
+        <div className="nav-logo">
+          <img src="/notebook-svgrepo-com.svg" alt="PermaJot logo" />
+          <span>PermaJot</span>
+        </div>
       </NavLink>
 
-      <button className="nav-toggle" onClick={() => setMenuOpen(prev => !prev)}>
+      <button
+        className="nav-toggle"
+        onClick={() => setMenuOpen((prev) => !prev)}
+      >
         ☰
       </button>
 
@@ -40,7 +45,7 @@ export default function Navigation() {
           <>
             <NavLink to="/dashboard">Dashboard</NavLink>
             <div className="nav-dropdown">
-              <button onClick={() => setDropdownOpen(prev => !prev)}>
+              <button onClick={() => setDropdownOpen((prev) => !prev)}>
                 {user.username} ▼
               </button>
               {dropdownOpen && (
