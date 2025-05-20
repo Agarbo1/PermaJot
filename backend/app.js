@@ -79,7 +79,7 @@ app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
 // Serve React frontend for all other routes
 app.use((req, res, next) => {
   if (req.method === 'GET' && !req.path.startsWith('/api')) {
-    res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
+    res.sendFile(path.resolve(__dirname, '../frontend/index.html'));
   } else {
     next();
   }
