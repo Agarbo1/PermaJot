@@ -24,7 +24,8 @@ const Dashboard = () => {
   const user = useSelector((state) => state.session.user);
   const notebooks = useSelector((state) => Object.values(state.notebooks));
   const notes = useSelector((state) => Object.values(state.notes));
-  const tasks = useSelector((state) => state.tasks);
+  const tasks = useSelector((state) => state.tasks.tasks || []);
+
 
 
   useEffect(() => {
@@ -64,11 +65,15 @@ const Dashboard = () => {
     );
   };
 
+  const handleToggleTask = (taskId) => {
+    dispatch(toggleTaskStatus(taskId));
+  };
+
   return (
     <div className="dashboard-container">
       <TaskSidebar
         tasks={tasks}
-        onToggle={(id) => dispatch(toggleTaskStatus(id))}
+        onToggle={handleToggleTask}
       />
 
       <div className="dashboard-main">
