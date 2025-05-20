@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const { environment } = require('./config');
 const routes = require('./routes');
 const { ValidationError } = require('sequelize');
+const path = require('path');
 
 
 const isProduction = environment === 'production';
@@ -45,14 +46,6 @@ app.use(
 
 app.use(routes); //Connect all routes to the app
 
-//Resource-not-found error handler
-app.use((_req, _res, next) => {
-  const err = new Error("The requested resource couldn't be found.");
-  err.title = "Resource Not Found";
-  err.errors = { message: "The requested resource couldn't be found." };
-  err.status = 404;
-  next(err);
-});
 
 // Process sequelize errors
 app.use((err, _req, _res, next) => {
@@ -80,7 +73,8 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-const path = require('path');
+// Serve static files from the React frontend app
+app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
 
 // Serve React frontend for all other routes
 app.use((req, res, next) => {
@@ -90,8 +84,14 @@ app.use((req, res, next) => {
     next();
   }
 });
-// Serve static files from the React frontend app
-app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
 
+//Resource-not-found error handler
+app.use((_req, _res, next) => {
+  const err = new Error("The requested resource couldn't be found.");
+  err.title = "Resource Not Found";
+  err.errors = { message: "The requested resource couldn't be found." };
+  err.status = 404;
+  next(err);
+});
 
 module.exports = app;
