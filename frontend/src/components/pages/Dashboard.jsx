@@ -8,11 +8,7 @@ import TaskFormModal from '../TaskForm/TaskFormModal';
 import NotebookCard from '../NotebookCard/NotebookCard';
 import TaskSidebar from '../TaskSidebar/TaskSidebar';
 import { fetchTasks, createTask, toggleTaskStatus } from '../../store/tasks'; // if this exists
-import {
-  createNotebook,
-  editNotebook,
-  deleteNotebook,
-} from '../../store/notebooks'; // if you want modal + create logic
+import { createNotebook, editNotebook, deleteNotebook, } from '../../store/notebooks'; // if you want modal + create logic
 import NotebookFormModal from '../NotebookFormModal/NotebookFormModal'; // modal to create notebooks
 import './Dashboard.css';
 
@@ -27,16 +23,19 @@ const Dashboard = () => {
   const tasks = useSelector((state) => state.tasks.tasks || []);
 
 
+console.log("📘 Dashboard mounted");
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    } else {
-      dispatch(fetchNotebooks());
-      dispatch(fetchNotes());
-      dispatch(fetchTasks());
-    }
-  }, [dispatch, user, navigate]);
+useEffect(() => {
+  console.log("DASHBOARD useEffect running, user:", user);
+  if (user === undefined) return; // still restoring session
+  if (!user) {
+    navigate('/login');
+  } else {
+    dispatch(fetchNotebooks());
+    dispatch(fetchNotes());
+    dispatch(fetchTasks());
+  }
+}, [dispatch, user, navigate]);
 
   if (!user) return null;
 
@@ -71,10 +70,12 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <TaskSidebar
-        tasks={tasks}
-        onToggle={handleToggleTask}
-      />
+      <div style={{ background: 'lime', padding: '2rem' }}>
+    ✅ Dashboard is Mounted
+  </div>
+  <div style={{ border: '2px solid red' }}>
+  <TaskSidebar tasks={tasks} onToggle={handleToggleTask} />
+</div>
 
       <div className="dashboard-main">
         <h1>Welcome back, {user.firstName}!</h1>
@@ -88,6 +89,7 @@ const Dashboard = () => {
           {notebooks.length === 0 ? (
             <p>You have no notebooks yet.</p>
           ) : (
+            <div style={{ border: '2px solid blue' }}>
             <div className="notebook-grid">
               {notebooks.map((notebook) => (
                 <NotebookCard
@@ -98,6 +100,7 @@ const Dashboard = () => {
                   onEdit={handleEditNotebook}
                 />
               ))}
+            </div>
             </div>
           )}
         </section>

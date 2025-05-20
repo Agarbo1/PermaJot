@@ -33,6 +33,7 @@ export const fetchTasks = () => async (dispatch) => {
   const response = await csrfFetch("/api/tasks");
   if (response.ok) {
     const tasks = await response.json();
+    console.log('Fetched tasks:', tasks);
     dispatch(setTasks(tasks));
   }
 };

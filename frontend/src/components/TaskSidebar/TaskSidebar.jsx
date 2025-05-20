@@ -46,7 +46,7 @@ const handleCheckboxChange = (task) => {
               <input
                 type="checkbox"
                 checked={task.isCompleted}
-                onChange={() => handleCheckboxChange(task.id)}
+                onChange={() => handleCheckboxChange(task)}
               />
               {task.title}
             </label>
