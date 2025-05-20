@@ -8,7 +8,11 @@ import TaskFormModal from '../TaskForm/TaskFormModal';
 import NotebookCard from '../NotebookCard/NotebookCard';
 import TaskSidebar from '../TaskSidebar/TaskSidebar';
 import { fetchTasks, createTask, toggleTaskStatus } from '../../store/tasks'; // if this exists
-import { createNotebook, editNotebook, deleteNotebook, } from '../../store/notebooks'; // if you want modal + create logic
+import {
+  createNotebook,
+  editNotebook,
+  deleteNotebook,
+} from '../../store/notebooks'; // if you want modal + create logic
 import NotebookFormModal from '../NotebookFormModal/NotebookFormModal'; // modal to create notebooks
 import './Dashboard.css';
 
@@ -22,20 +26,19 @@ const Dashboard = () => {
   const notes = useSelector((state) => Object.values(state.notes));
   const tasks = useSelector((state) => state.tasks.tasks || []);
 
+  console.log('📘 Dashboard mounted');
 
-console.log("📘 Dashboard mounted");
-
-useEffect(() => {
-  console.log("DASHBOARD useEffect running, user:", user);
-  if (user === undefined) return; // still restoring session
-  if (!user) {
-    navigate('/login');
-  } else {
-    dispatch(fetchNotebooks());
-    dispatch(fetchNotes());
-    dispatch(fetchTasks());
-  }
-}, [dispatch, user, navigate]);
+  useEffect(() => {
+    console.log('DASHBOARD useEffect running, user:', user);
+    if (user === undefined) return; // still restoring session
+    if (!user) {
+      navigate('/login');
+    } else {
+      dispatch(fetchNotebooks());
+      dispatch(fetchNotes());
+      dispatch(fetchTasks());
+    }
+  }, [dispatch, user, navigate]);
 
   if (!user) return null;
 
@@ -70,12 +73,9 @@ useEffect(() => {
 
   return (
     <div className="dashboard-container">
-      <div style={{ background: 'lime', padding: '2rem' }}>
-    ✅ Dashboard is Mounted
-  </div>
-  <div style={{ border: '2px solid red' }}>
-  <TaskSidebar tasks={tasks} onToggle={handleToggleTask} />
-</div>
+      <div style={{ border: '2px solid red' }}>
+        <TaskSidebar tasks={tasks} onToggle={handleToggleTask} />
+      </div>
 
       <div className="dashboard-main">
         <h1>Welcome back, {user.firstName}!</h1>
@@ -90,17 +90,17 @@ useEffect(() => {
             <p>You have no notebooks yet.</p>
           ) : (
             <div style={{ border: '2px solid blue' }}>
-            <div className="notebook-grid">
-              {notebooks.map((notebook) => (
-                <NotebookCard
-                  key={notebook.id}
-                  notebook={notebook}
-                  onClick={() => navigate(`/notebooks/${notebook.id}`)}
-                  onDelete={() => dispatch(deleteNotebook(notebook.id))}
-                  onEdit={handleEditNotebook}
-                />
-              ))}
-            </div>
+              <div className="notebook-grid">
+                {notebooks.map((notebook) => (
+                  <NotebookCard
+                    key={notebook.id}
+                    notebook={notebook}
+                    onClick={() => navigate(`/notebooks/${notebook.id}`)}
+                    onDelete={() => dispatch(deleteNotebook(notebook.id))}
+                    onEdit={handleEditNotebook}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </section>
