@@ -35,10 +35,10 @@ export const deleteNotebook = (notebookId) => ({
 
 // Thunk Action Creators
 export const fetchNotebooks = () => async (dispatch) => {
-  const response = await csrfFetch("/api/notebooks");
-  if (response.ok) {
-    const notebooks = await response.json();
-    dispatch(setNotebooks(notebooks));
+  const res = await csrfFetch('/api/notebooks');
+  if (res.ok) {
+    const data = await res.json(); // { notebooks: [...] }
+    dispatch(setNotebooks(data.notebooks)); // ✅ extract the array
   }
 };
 
@@ -101,12 +101,18 @@ const initialState = {
 const notebooksReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_NOTEBOOKS: {
-      const normalized = {};
-      action.notebooks.forEach(notebook => {
-        normalized[notebook.id] = notebook;
-      });
-      return { ...state, notebooks: normalized };
-    }
+  const normalized = {};
+  if (!Array.isArray(action.notebooks)) {
+    console.error("Expected array for notebooks, got:", action.notebooks);
+    return state;
+  }
+
+  action.notebooks.forEach(notebook => {
+    normalized[notebook.id] = notebook;
+  });
+
+  return { ...normalized }; // completely replace state with normalized
+}
     case ADD_NOTEBOOK:
       return {
         ...state,

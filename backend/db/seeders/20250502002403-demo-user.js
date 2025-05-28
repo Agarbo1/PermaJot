@@ -29,7 +29,7 @@ module.exports = {
       options,
       {
         username: { [Op.in]: ["Demo-lition"] },
-      },
+      }
     );
   },
 };

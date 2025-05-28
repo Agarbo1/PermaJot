@@ -14,15 +14,20 @@ export default function Navigation() {
   const user = useSelector((state) => state.session.user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { setModalContent } = useModal();
+  const { setModalContent, closeModal } = useModal();
 
   const handleLogout = async () => {
     await dispatch(logout());
     navigate('/');
   };
 
-  const openLoginModal = () => setModalContent(<LoginFormModal />);
-  const openSignupModal = () => setModalContent(<SignupFormModal />);
+const openLoginModal = () => {
+  setModalContent(<LoginFormModal onClose={closeModal} />);
+};
+
+const openSignupModal = () => {
+  setModalContent(<SignupFormModal onClose={closeModal} />);
+};
 
   return (
     <nav className="nav-container">
@@ -50,7 +55,6 @@ export default function Navigation() {
               </button>
               {dropdownOpen && (
                 <div className="dropdown-menu">
-                  <NavLink to="/profile">Profile</NavLink>
                   <button onClick={handleLogout}>Logout</button>
                 </div>
               )}
