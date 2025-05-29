@@ -15,7 +15,7 @@ const validateNotebook = [
   handleValidationErrors
 ];
 
-// GET /api/notebooks - Get all notebooks for the current user
+// GET /api/notebooks - Get all notebooks for the current user - WORKS
 router.get('/', requireAuth, async (req, res) => {
   const notebooks = await Notebook.findAll({
     where: { userId: req.user.id },
@@ -26,7 +26,7 @@ router.get('/', requireAuth, async (req, res) => {
   res.json({ notebooks });
 });
 
-// GET /api/notebooks/:id - Get a single notebook by ID
+// GET /api/notebooks/:id - Get a single notebook by ID - WORKS
 router.get('/:id', requireAuth, async (req, res) => {
   const notebook = await Notebook.findByPk(req.params.id, {
     include: [{ model: Note }]
@@ -39,21 +39,22 @@ router.get('/:id', requireAuth, async (req, res) => {
   res.json({ notebook });
 });
 
-// POST /api/notebooks - Create a new notebook
+// POST /api/notebooks - Create a new notebook - WORKS
 router.post('/', requireAuth, validateNotebook, async (req, res) => {
-  const { title } = req.body;
+  const { title, description } = req.body;
 
   const newNotebook = await Notebook.create({
-    title,
+    title: title,
+    description: description || '', // Allow description to be optional
     userId: req.user.id
   });
 
   res.status(201).json({ notebook: newNotebook });
 });
 
-// PUT /api/notebooks/:id - Update a notebook
+// PUT /api/notebooks/:id - Update a notebook - WORKS
 router.put('/:id', requireAuth, validateNotebook, async (req, res) => {
-  const { title } = req.body;
+  const { title, description } = req.body;
   const notebook = await Notebook.findByPk(req.params.id);
 
   if (!notebook || notebook.userId !== req.user.id) {
@@ -61,12 +62,13 @@ router.put('/:id', requireAuth, validateNotebook, async (req, res) => {
   }
 
   notebook.title = title;
+  notebook.description = description || notebook.description; // Allow description to be optional
   await notebook.save();
 
   res.json({ notebook });
 });
 
-// DELETE /api/notebooks/:id - Delete a notebook
+// DELETE /api/notebooks/:id - Delete a notebook - WORKS
 router.delete('/:id', requireAuth, async (req, res) => {
   const notebook = await Notebook.findByPk(req.params.id);
 

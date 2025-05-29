@@ -11,13 +11,13 @@ router.post('/:id', requireAuth, async (req, res) => {
 
   // Check if the note exists and belongs to the user
   const note = await Note.findByPk(noteId);
-  if (!note || note.userId !== req.user.id) {
+  if (!note) {
     return res.status(404).json({ message: 'Note not found' });
   }
 
   // Check if the tag exists and belongs to the user
   const tag = await Tag.findByPk(tagId);
-  if (!tag || tag.userId !== req.user.id) {
+  if (!tag) {
     return res.status(404).json({ message: 'Tag not found' });
   }
 
@@ -40,7 +40,7 @@ router.get('/:id', requireAuth, async (req, res) => {
     }
   });
 
-  if (!note || note.userId !== req.user.id) {
+  if (!note) {
     return res.status(404).json({ message: 'Note not found' });
   }
 
@@ -56,7 +56,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
   // Find the note by ID
   const note = await Note.findByPk(noteId);
 
-  if (!note || note.userId !== req.user.id) {
+  if (!note) {
     return res.status(404).json({ message: 'Note not found' });
   }
 

@@ -16,52 +16,43 @@ const validateNote = [
     .optional()
     .isString()
     .withMessage('Content must be a string.'),
+  check('notebookId')
+    .exists({ checkFalsy: true })
+    .withMessage('Notebook ID is required.'),
   handleValidationErrors
 ];
 
-// GET /api/notes - Get all notes for current user
-router.get('/', requireAuth, async (req, res) => {
-  const userId = req.user.id;
 
-  const notes = await Note.findAll({
-    where: { userId },
-    order: [['updatedAt', 'DESC']],
-  });
-
-  res.json({notes});
-});
-
-// GET /api/notes/:id - Get a single note by ID
+// GET /api/notes/:id - Get a single note by ID - WORKS
 router.get('/:id', requireAuth, async (req, res, next) => {
   const note = await Note.findByPk(req.params.id);
 
-  if (!note || note.userId !== req.user.id) {
+  if (!note) {
     return res.status(404).json({ message: 'Note not found' });
   }
 
   res.json({note});
 });
 
-// POST /api/notes - Create a new note
+// POST /api/notes - Create a new note - WORKS
 router.post('/', requireAuth, validateNote, async (req, res, next) => {
   const { title, content, notebookId } = req.body;
 
   const newNote = await Note.create({
     title,
     content,
-    notebookId: notebookId || null,
-    userId: req.user.id
+    notebookId: notebookId,
   });
 
   res.status(201).json({newNote});
 });
 
-// PUT /api/notes/:id - Update an existing note
+// PUT /api/notes/:id - Update an existing note - WORKS
 router.put('/:id', requireAuth, validateNote, async (req, res, next) => {
   const { title, content, notebookId } = req.body;
   const note = await Note.findByPk(req.params.id);
 
-  if (!note || note.userId !== req.user.id) {
+  if (!note) {
     return res.status(404).json({ message: 'Note not found' });
   }
 
@@ -73,11 +64,11 @@ router.put('/:id', requireAuth, validateNote, async (req, res, next) => {
   res.json({note});
 });
 
-// DELETE /api/notes/:id - Delete a note
+// DELETE /api/notes/:id - Delete a note - WORKS
 router.delete('/:id', requireAuth, async (req, res, next) => {
   const note = await Note.findByPk(req.params.id);
 
-  if (!note || note.userId !== req.user.id) {
+  if (!note) {
     return res.status(404).json({ message: 'Note not found' });
   }
 
