@@ -15,7 +15,7 @@ const validateTag = [
   handleValidationErrors
 ];
 
-// GET /api/tags - Get all tags for the current user
+// GET /api/tags - Get all tags for the current user - WORKS
 router.get('/', requireAuth, async (req, res) => {
   const tags = await Tag.findAll({
     where: { userId: req.user.id },
@@ -25,7 +25,7 @@ router.get('/', requireAuth, async (req, res) => {
   res.json({ tags });
 });
 
-// GET /api/tags/:id - Get a tag by ID
+// GET /api/tags/:id - Get a tag by ID - WORKS
 router.get('/:id', requireAuth, async (req, res) => {
   const tag = await Tag.findByPk(req.params.id, {
     include: [{ model: Note }]
@@ -38,7 +38,7 @@ router.get('/:id', requireAuth, async (req, res) => {
   res.json({ tag });
 });
 
-// POST /api/tags - Create a new tag
+// POST /api/tags - Create a new tag - WORKS
 router.post('/', requireAuth, validateTag, async (req, res) => {
   const { name } = req.body;
 
@@ -50,7 +50,7 @@ router.post('/', requireAuth, validateTag, async (req, res) => {
   res.status(201).json({ tag });
 });
 
-// PUT /api/tags/:id - Update a tag
+// PUT /api/tags/:id - Update a tag - WORKS
 router.put('/:id', requireAuth, validateTag, async (req, res) => {
   const { name } = req.body;
   const tag = await Tag.findByPk(req.params.id);
@@ -65,7 +65,7 @@ router.put('/:id', requireAuth, validateTag, async (req, res) => {
   res.json({ tag });
 });
 
-// DELETE /api/tags/:id - Delete a tag
+// DELETE /api/tags/:id - Delete a tag - WORKS
 router.delete('/:id', requireAuth, async (req, res) => {
   const tag = await Tag.findByPk(req.params.id);
 

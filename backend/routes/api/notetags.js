@@ -4,7 +4,7 @@ const { requireAuth } = require('../../utils/auth');
 const { Tag, Note } = require('../../db/models');
 
 
-//Add a tag to a note
+//Add a tag to a note - WORKS
 router.post('/:id', requireAuth, async (req, res) => {
   const { tagId } = req.body;
   const noteId = req.params.id;
@@ -28,7 +28,7 @@ router.post('/:id', requireAuth, async (req, res) => {
 
 });
 
-// GET /api/notetags/:id - Get all tags for a given note
+// GET /api/notetags/:id - Get all tags for a given note - WORKS
 router.get('/:id', requireAuth, async (req, res) => {
   const noteId = req.params.id;
 
@@ -48,7 +48,7 @@ router.get('/:id', requireAuth, async (req, res) => {
 });
 
 
-// Remove a tag from a note
+// Remove a tag from a note - WORKS
 router.delete('/:id', requireAuth, async (req, res) => {
   const { tagId } = req.body;
   const noteId = req.params.id;

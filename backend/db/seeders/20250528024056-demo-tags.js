@@ -12,16 +12,19 @@ module.exports = {
     await queryInterface.bulkInsert(options, [
       {
         name: 'Important',
+        userId: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         name: 'Urgent',
+        userId: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         name: 'Optional',
+        userId: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       }

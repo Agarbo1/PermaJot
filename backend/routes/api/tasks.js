@@ -6,11 +6,6 @@ const { handleValidationErrors } = require('../../utils/validation');
 const router = express.Router();
 // Validation middleware
 const validateTask = [
-  check('title')
-    .exists({ checkFalsy: true })
-    .withMessage('Title is required.')
-    .isLength({ max: 255 })
-    .withMessage('Title must be less than 255 characters.'),
   check('description')
     .optional()
     .isString()
@@ -18,7 +13,7 @@ const validateTask = [
   handleValidationErrors
 ];
 
-// GET /api/tasks - Get all tasks for current user
+// GET /api/tasks - Get all tasks for current user - WORKS
 router.get('/', requireAuth, async (req, res) => {
   const userId = req.user.id;
 
@@ -41,7 +36,7 @@ router.get('/:id', requireAuth, async (req, res, next) => {
   res.json({task});
 });
 
-// POST /api/tasks - Create a new task
+// POST /api/tasks - Create a new task - WORKS
 router.post('/', requireAuth, validateTask, async (req, res, next) => {
   const { title, description } = req.body;
 
@@ -54,9 +49,9 @@ router.post('/', requireAuth, validateTask, async (req, res, next) => {
   res.status(201).json({newTask});
 });
 
-// PUT /api/tasks/:id - Update an existing task
+// PUT /api/tasks/:id - Update an existing task - WORKS
 router.put('/:id', requireAuth, validateTask, async (req, res, next) => {
-  const { title, description } = req.body;
+  const { description } = req.body;
   const task = await Task.findByPk(req.params.id);
 
   if (!task || task.userId !== req.user.id) {
@@ -64,14 +59,13 @@ router.put('/:id', requireAuth, validateTask, async (req, res, next) => {
   }
 
   await task.update({
-    title,
     description
   });
 
   res.json({task});
 });
 
-// DELETE /api/tasks/:id - Delete a task
+// DELETE /api/tasks/:id - Delete a task - WORKS
 router.delete('/:id', requireAuth, async (req, res) => {
   const task = await Task.findByPk(req.params.id);
 
@@ -84,7 +78,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
   res.json({ message: 'Task deleted successfully' });
 });
 
-// POST /api/tasks/:id/complete - Mark a task as complete
+// POST /api/tasks/:id/complete - Mark a task as complete - WORKS
 router.post('/:id/complete', requireAuth, async (req, res) => {
   const task = await Task.findByPk(req.params.id);
 
@@ -98,7 +92,7 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
   res.json({ task });
 });
 
-// POST /api/tasks/:id/undo - Undo a task completion
+// POST /api/tasks/:id/undo - Undo a task completion - WORKS
 router.post('/:id/undo', requireAuth, async (req, res) => {
   const task = await Task.findByPk(req.params.id);
 
@@ -106,7 +100,7 @@ router.post('/:id/undo', requireAuth, async (req, res) => {
     return res.status(404).json({ message: 'Task not found' });
   }
 
-  task.completed = false;
+  task.isCompleted = false;
   await task.save();
 
   res.json({ task });
