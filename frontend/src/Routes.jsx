@@ -5,6 +5,7 @@ import NotebookView from './components/pages/NotebookView';
 import NoteView from './components/pages/NoteView';
 import Navigation from './components/Navigation/Navigation';
 import ProtectedRoute from './components/ProtectedRoute';
+import { Modal } from './context/Modal';
 
 export default function Routes({ isLoaded }) {
   return [
@@ -14,6 +15,7 @@ export default function Routes({ isLoaded }) {
         <>
           <header>
             <Navigation isLoaded={isLoaded} />
+            <Modal />
           </header>
           {isLoaded && <Outlet />}
         </>
@@ -26,7 +28,7 @@ export default function Routes({ isLoaded }) {
             <ProtectedRoute isLoaded={isLoaded}>
               <Dashboard />
             </ProtectedRoute>
-          )
+          ),
         },
         {
           path: 'notebooks/:notebookId',
@@ -34,7 +36,7 @@ export default function Routes({ isLoaded }) {
             <ProtectedRoute isLoaded={isLoaded}>
               <NotebookView />
             </ProtectedRoute>
-          )
+          ),
         },
         {
           path: 'notes/:noteId',
@@ -42,13 +44,13 @@ export default function Routes({ isLoaded }) {
             <ProtectedRoute isLoaded={isLoaded}>
               <NoteView />
             </ProtectedRoute>
-          )
+          ),
         },
         {
           path: '*',
-          element: <Navigate to="/" />
-        }
-      ]
-    }
+          element: <Navigate to="/" />,
+        },
+      ],
+    },
   ];
 }

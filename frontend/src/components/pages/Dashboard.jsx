@@ -26,8 +26,6 @@ const Dashboard = () => {
   const notes = useSelector((state) => Object.values(state.notes));
   const tasks = useSelector((state) => state.tasks.tasks || []);
 
-  console.log('📘 Dashboard mounted');
-
   useEffect(() => {
     console.log('DASHBOARD useEffect running, user:', user);
     if (user === undefined) return; // still restoring session
@@ -72,10 +70,18 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      <div style={{ border: '2px solid red' }}>
-        <TaskSidebar tasks={tasks} onToggle={handleToggleTask} />
-      </div>
+  <div className="dashboard-container">
+    {/* You can move this to a <Navbar /> component if needed */}
+    <div className="navbar">
+      <div className="logo">📓</div>
+      <div className="title">PermaJot</div>
+      <button className="sign-out" onClick={() => {/* logout logic */}}>
+        Sign Out
+      </button>
+    </div>
+
+    <div className="main-content">
+      <TaskSidebar tasks={tasks} onToggle={handleToggleTask} />
 
       <div className="dashboard-main">
         <h1>Welcome back, {user.firstName}!</h1>
@@ -89,18 +95,16 @@ const Dashboard = () => {
           {notebooks.length === 0 ? (
             <p>You have no notebooks yet.</p>
           ) : (
-            <div style={{ border: '2px solid blue' }}>
-              <div className="notebook-grid">
-                {notebooks.map((notebook) => (
-                  <NotebookCard
-                    key={notebook.id}
-                    notebook={notebook}
-                    onClick={() => navigate(`/notebooks/${notebook.id}`)}
-                    onDelete={() => dispatch(deleteNotebook(notebook.id))}
-                    onEdit={handleEditNotebook}
-                  />
-                ))}
-              </div>
+            <div className="notebook-grid">
+              {notebooks.map((notebook) => (
+                <NotebookCard
+                  key={notebook.id}
+                  notebook={notebook}
+                  onClick={() => navigate(`/notebooks/${notebook.id}`)}
+                  onDelete={() => dispatch(deleteNotebook(notebook.id))}
+                  onEdit={handleEditNotebook}
+                />
+              ))}
             </div>
           )}
         </section>
@@ -131,7 +135,9 @@ const Dashboard = () => {
         </section>
       </div>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Dashboard;

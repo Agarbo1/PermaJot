@@ -1,123 +1,121 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { signup } from '../../store/session';
-import '../Modal.css';
-import { useModal } from '../../context/Modal';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useModal } from "../../context/Modal";
+import * as sessionActions from "../../store/session";
+import "./SignupFormModal.css";
 
-const SignupFormModal = () => {
+function SignupFormModal() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { closeModal } = useModal();
-
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const { closeModal } = useModal();
+  const minUserChars = 4;
+  const minPassChars = 6;
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setErrors({});
-
-    if (password !== confirmPassword) {
-      setErrors({ confirmPassword: "Passwords do not match" });
-      return;
+    if (password === confirmPassword) {
+      setErrors({});
+      return dispatch(
+        sessionActions.signup({
+          email,
+          username,
+          password,
+        })
+      )
+        .then(closeModal)
+        .catch(async (res) => {
+          const data = await res.json();
+          if (data?.errors) {
+            setErrors(data.errors);
+          }
+        });
     }
+    return setErrors({
+      confirmPassword:
+        "Confirm Password field must be the same as the Password field",
+    });
+  };
 
-    const res = await dispatch(
-      signup({ email, username, firstName, lastName, password })
-    );
+  const isButtonDisabled =
+    !email ||
+    !username ||
+    !password ||
+    !confirmPassword ||
+    username.length < minUserChars ||
+    password.length < minPassChars;
 
-    if (res && res.errors) {
-      setErrors(res.errors);
-    } else {
-      closeModal();
-      navigate('/dashboard');
-    }
+  const toggleShowPassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   return (
-    <div className="modal">
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
+    <>
+      <h1 className="signup-form__title">Sign Up</h1>
+      <form onSubmit={handleSubmit} className="signup-form">
+        <div className="signup-form__input-container">
+          <label>Email</label>
           <input
-            type="email"
+            type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </label>
-        {errors.email && <p className="error">{errors.email}</p>}
-
-        <label>
-          Username
+          {errors.email && <p className="error">{errors.email}</p>}
+        </div>
+        <div className="signup-form__input-container">
+          <label>Username</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
-        </label>
-        {errors.username && <p className="error">{errors.username}</p>}
-
-        <label>
-          First Name
+          {errors.username && <p className="error">{errors.username}</p>}
+        </div>
+        <div className="signup-form__input-container">
+          <label>Password</label>
           <input
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-        </label>
-        {errors.firstName && <p className="error">{errors.firstName}</p>}
-
-        <label>
-          Last Name
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-        </label>
-        {errors.lastName && <p className="error">{errors.lastName}</p>}
-
-        <label>
-          Password
-          <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
-        {errors.password && <p className="error">{errors.password}</p>}
-
-        <label>
-          Confirm Password
+          <button
+            type="button"
+            className="show-password-btn"
+            onClick={toggleShowPassword}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+          {errors.password && <p className="error">{errors.password}</p>}
+        </div>
+        <div className="signup-form__input-container">
+          <label>Confirm Password</label>
           <input
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-        </label>
-        {errors.confirmPassword && (
-          <p className="error">{errors.confirmPassword}</p>
-        )}
-
-        <div className="modal-buttons">
-          <button type="submit" className="submit-btn">Sign Up</button>
-          <button type="button" onClick={closeModal}>Cancel</button>
+          {errors.confirmPassword && (
+            <p className="error">{errors.confirmPassword}</p>
+          )}
         </div>
+        <button
+          type="submit"
+          disabled={isButtonDisabled}
+          className="signup-form__submit-button"
+        >
+          Sign Up
+        </button>
       </form>
-    </div>
+    </>
   );
-};
+}
 
 export default SignupFormModal;

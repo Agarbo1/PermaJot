@@ -1,72 +1,39 @@
-// src/components/Navigation/Navigation.jsx
-import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../store/session';
-import './Navigation.css';
-import { useModal } from '../../context/Modal';
-import LoginFormModal from '../LoginFormModal/LoginFormModal';
-import SignupFormModal from '../SignupFormModal/SignupFormModal';
+import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import ProfileButton from "./ProfileButton";
+import "./Navigation.css";
 
-export default function Navigation() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const user = useSelector((state) => state.session.user);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { setModalContent, closeModal } = useModal();
-
-  const handleLogout = async () => {
-    await dispatch(logout());
-    navigate('/');
-  };
-
-const openLoginModal = () => {
-  setModalContent(<LoginFormModal onClose={closeModal} />);
-};
-
-const openSignupModal = () => {
-  setModalContent(<SignupFormModal onClose={closeModal} />);
-};
+const Navigation = ({ isLoaded }) => {
+  const sessionUser = useSelector((state) => state.session.user);
 
   return (
-    <nav className="nav-container">
-      <NavLink to="/dashboard" className="nav-logo">
-        <div className="nav-logo">
-          <img src="/notebook-svgrepo-com.svg" alt="PermaJot logo" />
-          <span>PermaJot</span>
+    <nav className="nav-bar">
+      <li>
+        <NavLink to="/" className="logo" data-testid="logo">
+          <span>
+            Perma
+            <span className="primary">
+              Jot
+            </span>
+          </span>
+        </NavLink>
+      </li>
+      {isLoaded && (
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          {sessionUser && (
+            <li>
+              <NavLink to="/spots/new" data-testid="create-new-spot-button">
+                Create a New Spot
+              </NavLink>
+            </li>
+          )}
+          <li>
+            <ProfileButton user={sessionUser} />
+          </li>
         </div>
-      </NavLink>
-
-      <button
-        className="nav-toggle"
-        onClick={() => setMenuOpen((prev) => !prev)}
-      >
-        ☰
-      </button>
-
-      <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-        {user ? (
-          <>
-            <NavLink to="/dashboard">Dashboard</NavLink>
-            <div className="nav-dropdown">
-              <button onClick={() => setDropdownOpen((prev) => !prev)}>
-                {user.username} ▼
-              </button>
-              {dropdownOpen && (
-                <div className="dropdown-menu">
-                  <button onClick={handleLogout}>Logout</button>
-                </div>
-              )}
-            </div>
-          </>
-        ) : (
-          <>
-            <button onClick={openLoginModal}>Log In</button>
-            <button onClick={openSignupModal}>Sign Up</button>
-          </>
-        )}
-      </div>
+      )}
     </nav>
   );
-}
+};
+
+export default Navigation;

@@ -1,94 +1,82 @@
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  z-index: 1000;
-  background-color: #1a1a1a;
+/* Navigation Bar */
+.nav-bar {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
-  border-bottom: 1px solid #333;
+  align-items: center;
+  height: 60px;
+  background-color: #222;
+  color: white;
+  padding: 0 1.5rem;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 100;
+  box-sizing: border-box;
 }
 
-.nav-logo {
+/* Logo */
+.logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  text-decoration: none;
+  color: white;
   font-size: 1.5rem;
   font-weight: bold;
-  color: #e53935;
 }
 
-.nav-logo img {
-  height: 32px;
-  width: 32px;
-  object-fit: contain;
+.logo .primary {
+  color: #ffd700; /* gold or accent color for 'Jot' */
+  margin-left: 0.2rem;
 }
 
-.nav-links {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.nav-links a {
-  color: #eee;
-  text-decoration: none;
-  font-weight: 500;
-  position: relative;
-}
-
-.nav-links a:hover {
-  color: #e53935;
-}
-
-.nav-links .active {
-  color: #e53935;
-}
-
-.nav-profile {
+/* Navigation Right Section (inlined for now in JSX, but can extract if needed) */
+.nav-right {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
+}
+
+/* Buttons */
+.nav-button {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 0.4rem 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.nav-button:hover {
+  background-color: white;
+  color: #222;
+}
+
+/* Dropdowns */
+.nav-dropdown {
   position: relative;
 }
 
-.nav-profile img {
-  border-radius: 50%;
-  height: 32px;
-  width: 32px;
-}
-
-.nav-dropdown {
-  background-color: #1e1e1e;
-  border: 1px solid #333;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0.5rem;
-  min-width: 150px;
-  z-index: 10;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.nav-dropdown a,
-.nav-dropdown button {
-  display: block;
-  width: 100%;
-  padding: 0.75rem 1rem;
+.profile-button {
   background: none;
+  color: white;
   border: none;
-  color: #eee;
-  text-align: left;
   cursor: pointer;
-  font-size: 0.9rem;
 }
 
-.nav-dropdown a:hover,
-.nav-dropdown button:hover {
-  background-color: #2a2a2a;
-  color: #e53935;
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  background: white;
+  color: black;
+  top: 100%;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  display: none;
+}
+
+.nav-dropdown:hover .dropdown-menu {
+  display: block;
 }

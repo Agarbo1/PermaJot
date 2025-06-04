@@ -22,11 +22,11 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
+<Provider store={store}>
+  <BrowserRouter>
     <ModalProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <App />
     </ModalProvider>
-  </Provider>
+  </BrowserRouter>
+</Provider>
 );

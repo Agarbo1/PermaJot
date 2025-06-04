@@ -33,24 +33,23 @@ export function ModalProvider({ children }) {
       <ModalContext.Provider value={contextValue}>
         {children}
       </ModalContext.Provider>
-      <div ref={modalRef} />
     </>
   );
 }
 
 export function Modal() {
   const { modalRef, modalContent, closeModal } = useContext(ModalContext);
+  console.log("Modal rendering with content:", modalContent);
   // If there is no div referenced by the modalRef or modalContent is not a
   // truthy value, render nothing:
   if (!modalRef || !modalRef.current || !modalContent) return null;
 
-  // Render the following component to the div referenced by the modalRef
   return createPortal(
     <div id="modal">
       <div id="modal-background" onClick={closeModal} />
       <div id="modal-content">{modalContent}</div>
     </div>,
-    modalRef.current
+    document.getElementById('modal')
   );
 }
 
