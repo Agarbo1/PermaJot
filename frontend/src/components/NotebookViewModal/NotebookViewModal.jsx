@@ -2,7 +2,7 @@
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-export default function NotebookView() {
+export default function NotebookViewModal() {
   const { notebookId } = useParams();
   const notebook = useSelector((state) => state.notebooks[notebookId]);
 
@@ -15,3 +15,4 @@ export default function NotebookView() {
     </div>
   );
 }
+

@@ -1,11 +1,11 @@
 import { useDispatch } from 'react-redux';
-import { useModal } from '../../context/Modal';
+// import { useModal } from '../../context/Modal';
 import * as notebookActions from '../../store/notebooks';
 import '../Modal.css'; // optional for styling
-// const { closeModal } = useModal();
 
 const DeleteNotebookModal = ({ notebookId, closeModal }) => {
   const dispatch = useDispatch();
+  // const { closeModal } = useModal();
 
   const handleDeleteNotebook = () => {
     dispatch(notebookActions.deleteNotebook(notebookId))

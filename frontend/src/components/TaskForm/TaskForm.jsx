@@ -3,7 +3,6 @@ import { useState } from 'react';
 
 export default function TaskForm({ task = {}, onSubmit, onCancel }) {
   const [description, setDescription] = useState(task.description || '');
-  const [dueDate, setDueDate] = useState(task.dueDate || '');
   const [isCompleted, setIsCompleted] = useState(task.isCompleted || false);
 
   const handleSubmit = (e) => {
@@ -12,7 +11,6 @@ export default function TaskForm({ task = {}, onSubmit, onCancel }) {
     const formData = {
       ...task, // include id if editing
       description: description.trim(),
-      dueDate,
       isCompleted,
     };
 
@@ -29,16 +27,6 @@ export default function TaskForm({ task = {}, onSubmit, onCancel }) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="dueDate">Due Date</label>
-        <input
-          id="dueDate"
-          type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
         />
       </div>
 

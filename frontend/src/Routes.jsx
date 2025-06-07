@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import Home from './components/pages/Home';
 import Dashboard from './components/pages/Dashboard';
-import NotebookView from './components/pages/NotebookView';
-import NoteView from './components/pages/NoteView';
+import NotebookViewModal from './components/NotebookViewModal/NotebookViewModal';
+import NoteViewModal from './components/NoteViewModal/NoteViewModal';
 import Navigation from './components/Navigation/Navigation';
 import ProtectedRoute from './components/ProtectedRoute';
-import { Modal } from './context/Modal';
+import { Modal } from './components/Modal';
 
 export default function Routes({ isLoaded }) {
   return [
@@ -34,7 +34,7 @@ export default function Routes({ isLoaded }) {
           path: 'notebooks/:notebookId',
           element: (
             <ProtectedRoute isLoaded={isLoaded}>
-              <NotebookView />
+              <NotebookViewModal />
             </ProtectedRoute>
           ),
         },
@@ -42,7 +42,7 @@ export default function Routes({ isLoaded }) {
           path: 'notes/:noteId',
           element: (
             <ProtectedRoute isLoaded={isLoaded}>
-              <NoteView />
+              <NoteViewModal />
             </ProtectedRoute>
           ),
         },

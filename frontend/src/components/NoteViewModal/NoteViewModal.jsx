@@ -2,7 +2,7 @@
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-export default function NoteView() {
+export default function NoteViewModal() {
   const { noteId } = useParams();
   const note = useSelector((state) => state.notes[noteId]);
 
