@@ -1,6 +1,5 @@
 // src/components/NotebookCard/NotebookCard.jsx
 import { useNavigate } from 'react-router-dom';
-import './NotebookCard.css';
 
 export default function NotebookCard({ notebook, onDelete, onEdit }) {
   const navigate = useNavigate();

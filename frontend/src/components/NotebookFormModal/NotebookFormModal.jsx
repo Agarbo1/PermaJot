@@ -5,7 +5,6 @@ import {
   createNotebook,
   editNotebook,
 } from '../../store/notebooks'; // adjust if you use thunks/actions differently
-import './NotebookFormModal.css';
 
 const NotebookFormModal = ({ notebook = null, onClose }) => {
   const dispatch = useDispatch();

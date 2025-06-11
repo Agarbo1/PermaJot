@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import './TaskSidebar.css';
 
 export default function TaskSidebar({ tasks, onToggle }) {
   const [sortedTasks, setSortedTasks] = useState([]);

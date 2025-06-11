@@ -1,20 +1,15 @@
+// Fully inline-styled version of your Dashboard.jsx
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchNotebooks } from '../../store/notebooks';
-import { fetchNotes } from '../../store/notes';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../context/Modal';
 import TaskFormModal from '../TaskForm/TaskFormModal';
 import NotebookCard from '../NotebookCard/NotebookCard';
 import TaskSidebar from '../TaskSidebar/TaskSidebar';
-import { fetchTasks, createTask, toggleTaskStatus } from '../../store/tasks'; // if this exists
-import {
-  createNotebook,
-  editNotebook,
-  deleteNotebook,
-} from '../../store/notebooks'; // if you want modal + create logic
-import NotebookFormModal from '../NotebookFormModal/NotebookFormModal'; // modal to create notebooks
-import './Dashboard.css';
+import NotebookFormModal from '../NotebookFormModal/NotebookFormModal';
+import { fetchNotebooks, createNotebook, editNotebook, deleteNotebook } from '../../store/notebooks';
+import { fetchNotes } from '../../store/notes';
+import { fetchTasks, createTask, toggleTaskStatus } from '../../store/tasks';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -27,8 +22,7 @@ const Dashboard = () => {
   const tasks = useSelector((state) => state.tasks.tasks || []);
 
   useEffect(() => {
-    console.log('DASHBOARD useEffect running, user:', user);
-    if (user === undefined) return; // still restoring session
+    if (user === undefined) return;
     if (!user) {
       navigate('/login');
     } else {
@@ -69,75 +63,122 @@ const Dashboard = () => {
     dispatch(toggleTaskStatus(taskId));
   };
 
+  const styles = {
+    container: {
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100vh',
+      fontFamily: 'system-ui, sans-serif',
+    },
+    navbar: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '1rem',
+      backgroundColor: '#f5f5f5',
+      borderBottom: '1px solid #ddd',
+    },
+    mainContent: {
+      display: 'flex',
+      flex: 1,
+    },
+    dashboardMain: {
+      flex: 1,
+      padding: '2rem',
+      backgroundColor: '#fff',
+    },
+    section: {
+      marginBottom: '2rem',
+    },
+    sectionHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '1rem',
+    },
+    notebookGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+      gap: '1rem',
+    },
+    notesList: {
+      listStyle: 'none',
+      padding: 0,
+    },
+    noteItem: {
+      padding: '0.5rem 0',
+      cursor: 'pointer',
+      color: '#2f80ed',
+    },
+  };
+
   return (
-  <div className="dashboard-container">
-    {/* You can move this to a <Navbar /> component if needed */}
-    <div className="navbar">
-      <div className="logo">📓</div>
-      <div className="title">PermaJot</div>
-      <button className="sign-out" onClick={() => {/* logout logic */}}>
-        Sign Out
-      </button>
-    </div>
+    <div style={styles.container}>
+      <div style={styles.navbar}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ fontSize: '1.5rem' }}>📓</span>
+          <span style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>PermaJot</span>
+        </div>
+        {/* Replace this with ProfileButton if needed */}
+        <button style={{ backgroundColor: '#2f80ed', color: 'white', border: 'none', borderRadius: '20px', padding: '0.5rem 1rem', cursor: 'pointer' }}>Sign Out</button>
+      </div>
 
-    <div className="main-content">
-      <TaskSidebar tasks={tasks} onToggle={handleToggleTask} />
+      <div style={styles.mainContent}>
+        <TaskSidebar tasks={tasks} onToggle={handleToggleTask} />
 
-      <div className="dashboard-main">
-        <h1>Welcome back, {user.firstName}!</h1>
+        <div style={styles.dashboardMain}>
+          <h1>Welcome back, {user.firstName}!</h1>
 
-        <section className="dashboard-section">
-          <div className="dashboard-header">
-            <h2>Your Notebooks</h2>
-            <button onClick={handleCreateNotebook}>Create Notebook</button>
-          </div>
-
-          {notebooks.length === 0 ? (
-            <p>You have no notebooks yet.</p>
-          ) : (
-            <div className="notebook-grid">
-              {notebooks.map((notebook) => (
-                <NotebookCard
-                  key={notebook.id}
-                  notebook={notebook}
-                  onClick={() => navigate(`/notebooks/${notebook.id}`)}
-                  onDelete={() => dispatch(deleteNotebook(notebook.id))}
-                  onEdit={handleEditNotebook}
-                />
-              ))}
+          <section style={styles.section}>
+            <div style={styles.sectionHeader}>
+              <h2>Your Notebooks</h2>
+              <button onClick={handleCreateNotebook}>Create Notebook</button>
             </div>
-          )}
-        </section>
-
-        <section className="dashboard-section">
-          <div className="dashboard-header">
-            <h2>Recent Notes</h2>
-            <button onClick={handleCreateTask}>Create Task</button>
-          </div>
-
-          {notes.length === 0 ? (
-            <p>No notes found.</p>
-          ) : (
-            <ul>
-              {notes
-                .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-                .slice(0, 5)
-                .map((note) => (
-                  <li
-                    key={note.id}
-                    onClick={() => navigate(`/notes/${note.id}`)}
-                  >
-                    {note.title || 'Untitled Note'}
-                  </li>
+            {notebooks.length === 0 ? (
+              <p>You have no notebooks yet.</p>
+            ) : (
+              <div style={styles.notebookGrid}>
+                {notebooks.map((notebook) => (
+                  <NotebookCard
+                    key={notebook.id}
+                    notebook={notebook}
+                    onClick={() => navigate(`/notebooks/${notebook.id}`)}
+                    onDelete={() => dispatch(deleteNotebook(notebook.id))}
+                    onEdit={handleEditNotebook}
+                  />
                 ))}
-            </ul>
-          )}
-        </section>
+              </div>
+            )}
+          </section>
+
+          <section style={styles.section}>
+            <div style={styles.sectionHeader}>
+              <h2>Recent Notes</h2>
+              <button onClick={handleCreateTask}>Create Task</button>
+            </div>
+            {notes.length === 0 ? (
+              <p>No notes found.</p>
+            ) : (
+              <ul style={styles.notesList}>
+                {notes
+                  .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+                  .slice(0, 5)
+                  .map((note) => (
+                    <li
+                      key={note.id}
+                      onClick={() => navigate(`/notes/${note.id}`)}
+                      style={styles.noteItem}
+                    >
+                      {note.title || 'Untitled Note'}
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </section>
+        </div>
       </div>
     </div>
-  </div>
-);
-
+  );
 };
 
 export default Dashboard;

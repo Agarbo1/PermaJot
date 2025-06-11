@@ -2,7 +2,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../context/Modal';
 import NoteTagModal from '../NoteTagModal/NoteTagModal';
-import './NoteCard.css';
 
 export default function NoteCard({ note }) {
   const navigate = useNavigate();

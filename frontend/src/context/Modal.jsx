@@ -1,6 +1,5 @@
 import { useRef, useState, useContext, createContext } from 'react';
 import { createPortal } from 'react-dom';
-import './Modal.css';
 
 const ModalContext = createContext();
 

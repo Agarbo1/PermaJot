@@ -1,4 +1,4 @@
-import "./ToolTip.css";
+
 
 const ToolTip = ({ text, children, ...props }) => {
   return (
