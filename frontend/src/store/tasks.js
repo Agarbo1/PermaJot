@@ -58,7 +58,7 @@ export const updateTaskDetails = (task) => async (dispatch) => {
   }
 };
 export const removeTask = (taskId) => async (dispatch) => {
-  const response = await csrfFetch(`/api/tasks/${taskId}`, {
+  const response = await csrfFetch(`/api/tasks/${taskId}/toggle`, {
     method: "DELETE",
   });
   if (response.ok) {
@@ -67,11 +67,11 @@ export const removeTask = (taskId) => async (dispatch) => {
 }
 export const toggleTaskStatus = (taskId) => async (dispatch) => {
   const response = await csrfFetch(`/api/tasks/${taskId}/toggle`, {
-    method: "POST",
+    method: "PATCH",
   });
   if (response.ok) {
     const updatedTask = await response.json();
-    dispatch(toggleTask(updatedTask.id));
+    dispatch(toggleTask(updatedTask));
   }
 };
 // Reducer

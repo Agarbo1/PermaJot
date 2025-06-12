@@ -128,7 +128,7 @@ function LoginFormModal() {
               <CTAButton type="submit" disabled={isButtonDisabled}>
                Log In
             </CTAButton>
-            <CTAButton variant="secondary" onClick={handleDemoLogin}>
+            <CTAButton type="button" variant="secondary" onClick={handleDemoLogin}>
               Demo Login
             </CTAButton>
             <CancelButton />

@@ -78,32 +78,16 @@ router.delete('/:id', requireAuth, async (req, res) => {
   res.json({ message: 'Task deleted successfully' });
 });
 
-// POST /api/tasks/:id/complete - Mark a task as complete - WORKS
-router.post('/:id/complete', requireAuth, async (req, res) => {
+router.patch('/:id/toggle', requireAuth, async (req, res) => {
   const task = await Task.findByPk(req.params.id);
-
   if (!task || task.userId !== req.user.id) {
-    return res.status(404).json({ message: 'Task not found' });
+    return res.status(404).json({ error: 'Task not found' });
   }
 
-  task.isCompleted = true;
+  task.isCompleted = !task.isCompleted;
   await task.save();
-
-  res.json({ task });
+  res.json(task);
 });
 
-// POST /api/tasks/:id/undo - Undo a task completion - WORKS
-router.post('/:id/undo', requireAuth, async (req, res) => {
-  const task = await Task.findByPk(req.params.id);
-
-  if (!task || task.userId !== req.user.id) {
-    return res.status(404).json({ message: 'Task not found' });
-  }
-
-  task.isCompleted = false;
-  await task.save();
-
-  res.json({ task });
-});
 
 module.exports = router;

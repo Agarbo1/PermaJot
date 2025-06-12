@@ -3,13 +3,17 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../context/Modal';
-import TaskFormModal from '../TaskForm/TaskFormModal';
 import NotebookCard from '../NotebookCard/NotebookCard';
 import TaskSidebar from '../TaskSidebar/TaskSidebar';
 import NotebookFormModal from '../NotebookFormModal/NotebookFormModal';
-import { fetchNotebooks, createNotebook, editNotebook, deleteNotebook } from '../../store/notebooks';
+import {
+  fetchNotebooks,
+  createNotebook,
+  editNotebook,
+  deleteNotebook,
+} from '../../store/notebooks';
 import { fetchNotes } from '../../store/notes';
-import { fetchTasks, createTask, toggleTaskStatus } from '../../store/tasks';
+import { fetchTasks, toggleTaskStatus } from '../../store/tasks';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -53,11 +57,6 @@ const Dashboard = () => {
     );
   };
 
-  const handleCreateTask = () => {
-    setModalContent(
-      <TaskFormModal onSubmit={(data) => dispatch(createTask(data))} />
-    );
-  };
 
   const handleToggleTask = (taskId) => {
     dispatch(toggleTaskStatus(taskId));
@@ -96,11 +95,12 @@ const Dashboard = () => {
       alignItems: 'center',
       marginBottom: '1rem',
     },
-    notebookGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+    notebookList: {
+      display: 'flex',
+      flexDirection: 'column',
       gap: '1rem',
     },
+
     notesList: {
       listStyle: 'none',
       padding: 0,
@@ -110,6 +110,15 @@ const Dashboard = () => {
       cursor: 'pointer',
       color: '#2f80ed',
     },
+    button: {
+      backgroundColor: '#2f80ed',
+      color: 'white',
+      border: 'none',
+      borderRadius: '20px',
+      padding: '0.5rem 1rem',
+      cursor: 'pointer',
+      transition: 'background-color 0.2s ease',
+    },
   };
 
   return (
@@ -117,10 +126,14 @@ const Dashboard = () => {
       <div style={styles.navbar}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '1.5rem' }}>📓</span>
-          <span style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>PermaJot</span>
+          <span style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>
+            PermaJot
+          </span>
         </div>
         {/* Replace this with ProfileButton if needed */}
-        <button style={{ backgroundColor: '#2f80ed', color: 'white', border: 'none', borderRadius: '20px', padding: '0.5rem 1rem', cursor: 'pointer' }}>Sign Out</button>
+        <button style={styles.button}>
+          Sign Out
+        </button>
       </div>
 
       <div style={styles.mainContent}>
@@ -132,12 +145,12 @@ const Dashboard = () => {
           <section style={styles.section}>
             <div style={styles.sectionHeader}>
               <h2>Your Notebooks</h2>
-              <button onClick={handleCreateNotebook}>Create Notebook</button>
+              <button style ={styles.button} onClick={handleCreateNotebook}>Create Notebook</button>
             </div>
             {notebooks.length === 0 ? (
               <p>You have no notebooks yet.</p>
             ) : (
-              <div style={styles.notebookGrid}>
+              <div style={styles.notebookList}>
                 {notebooks.map((notebook) => (
                   <NotebookCard
                     key={notebook.id}
@@ -154,7 +167,6 @@ const Dashboard = () => {
           <section style={styles.section}>
             <div style={styles.sectionHeader}>
               <h2>Recent Notes</h2>
-              <button onClick={handleCreateTask}>Create Task</button>
             </div>
             {notes.length === 0 ? (
               <p>No notes found.</p>
