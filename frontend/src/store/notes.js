@@ -30,11 +30,11 @@ export const deleteNote = (noteId) => ({
   noteId,
 });
 
-// Thunk Action Creators
-export const fetchNotes = () => async (dispatch) => {
-  const response = await csrfFetch('/api/notes');
-  if (response.ok) {
-    const notes = await response.json();
+
+export const fetchNotebookNotes = (notebookId) => async (dispatch) => {
+  const res = await csrfFetch(`/api/notes/notebook/${notebookId}`);
+  if (res.ok) {
+    const notes = await res.json();
     dispatch(setNotes(notes));
   }
 };

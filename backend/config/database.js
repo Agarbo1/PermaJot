@@ -6,6 +6,7 @@ module.exports = {
     storage: config.dbFile,
     dialect: "sqlite",
     seederStorage: "sequelize",
+    seederStorageTableName: 'SequelizeData',
     logQueryParameters: true,
     typeValidation: true
   },

@@ -4,7 +4,7 @@ const SET_NOTEBOOKS = "notebooks/SET_NOTEBOOKS";
 const ADD_NOTEBOOK = "notebooks/ADD_NOTEBOOK";
 const SET_NOTEBOOK_NOTES = "notebooks/SET_NOTEBOOK_NOTES";
 const UPDATE_NOTEBOOK = "notebooks/UPDATE_NOTEBOOK";
-const DELETE_NOTEBOOK = "notebooks/DELETE_NOTEBOOK";
+const REMOVE_NOTEBOOK = "notebooks/REMOVE_NOTEBOOK";
 
 // Action Creators
 export const setNotebooks = (notebooks) => ({
@@ -28,8 +28,8 @@ export const updateNotebook = (notebook) => ({
   notebook,
 });
 
-export const deleteNotebook = (notebookId) => ({
-  type: DELETE_NOTEBOOK,
+export const removeNotebook = (notebookId) => ({
+  type: REMOVE_NOTEBOOK,
   notebookId,
 });
 
@@ -82,15 +82,15 @@ export const editNotebook = (notebook) => async (dispatch) => {
   }
 };
 
-export const removeNotebook = (notebookId) => async (dispatch) => {
-  const response = await csrfFetch(`/api/notebooks/${notebookId}`, {
-    method: "DELETE",
+export const deleteNotebook = (notebookId) => async (dispatch) => {
+  const res = await csrfFetch(`/api/notebooks/${notebookId}`, {
+    method: 'DELETE',
   });
-  if (response.ok) {
-    dispatch(deleteNotebook(notebookId));
+
+  if (res.ok) {
+    dispatch(removeNotebook(notebookId));
   }
 };
-
 // Initial State
 const initialState = {
   notebooks: {},
@@ -137,7 +137,7 @@ const notebooksReducer = (state = initialState, action) => {
           [action.notebook.id]: action.notebook,
         },
       };
-    case DELETE_NOTEBOOK: {
+    case REMOVE_NOTEBOOK: {
       const newNotebooks = { ...state.notebooks };
       delete newNotebooks[action.notebookId];
       return { ...state, notebooks: newNotebooks };

@@ -6,13 +6,8 @@ import { useModal } from '../../context/Modal';
 import NotebookCard from '../NotebookCard/NotebookCard';
 import TaskSidebar from '../TaskSidebar/TaskSidebar';
 import NotebookFormModal from '../NotebookFormModal/NotebookFormModal';
-import {
-  fetchNotebooks,
-  createNotebook,
-  editNotebook,
-  deleteNotebook,
-} from '../../store/notebooks';
-import { fetchNotes } from '../../store/notes';
+import * as sessionActions from '../../store/session';
+import * as notebookActions from '../../store/notebooks';
 import { fetchTasks, toggleTaskStatus } from '../../store/tasks';
 
 const Dashboard = () => {
@@ -22,26 +17,26 @@ const Dashboard = () => {
 
   const user = useSelector((state) => state.session.user);
   const notebooks = useSelector((state) => Object.values(state.notebooks));
-  const notes = useSelector((state) => Object.values(state.notes));
   const tasks = useSelector((state) => state.tasks.tasks || []);
+  const notebookId = useSelector((state) => state.notebooks.currentNotebookId);
 
   useEffect(() => {
     if (user === undefined) return;
+    if (notebookId) dispatch(notebookActions.fetchNotebookNotes(notebookId));
     if (!user) {
       navigate('/login');
     } else {
-      dispatch(fetchNotebooks());
-      dispatch(fetchNotes());
+      dispatch(notebookActions.fetchNotebooks());
       dispatch(fetchTasks());
     }
-  }, [dispatch, user, navigate]);
+  }, [dispatch, user, navigate, notebookId]);
 
   if (!user) return null;
 
   const handleCreateNotebook = () => {
     setModalContent(
       <NotebookFormModal
-        onSubmit={(data) => dispatch(createNotebook(data))}
+        onSubmit={(data) => dispatch(notebookActions.createNotebook(data))}
         onClose={closeModal}
       />
     );
@@ -51,7 +46,7 @@ const Dashboard = () => {
     setModalContent(
       <NotebookFormModal
         notebook={notebook}
-        onSubmit={(data) => dispatch(editNotebook(data))}
+        onSubmit={(data) => dispatch(notebookActions.editNotebook(data))}
         onClose={closeModal}
       />
     );
@@ -61,6 +56,12 @@ const Dashboard = () => {
   const handleToggleTask = (taskId) => {
     dispatch(toggleTaskStatus(taskId));
   };
+
+  const handleLogout = async () => {
+  await dispatch(sessionActions.logout());
+  navigate('/'); // Redirect to homepage after logout
+};
+
 
   const styles = {
     container: {
@@ -131,7 +132,7 @@ const Dashboard = () => {
           </span>
         </div>
         {/* Replace this with ProfileButton if needed */}
-        <button style={styles.button}>
+        <button style={styles.button} onClick={handleLogout}>
           Sign Out
         </button>
       </div>
@@ -156,35 +157,11 @@ const Dashboard = () => {
                     key={notebook.id}
                     notebook={notebook}
                     onClick={() => navigate(`/notebooks/${notebook.id}`)}
-                    onDelete={() => dispatch(deleteNotebook(notebook.id))}
+                    onDelete={() => dispatch(notebookActions.deleteNotebook(notebook.id))}
                     onEdit={handleEditNotebook}
                   />
                 ))}
               </div>
-            )}
-          </section>
-
-          <section style={styles.section}>
-            <div style={styles.sectionHeader}>
-              <h2>Recent Notes</h2>
-            </div>
-            {notes.length === 0 ? (
-              <p>No notes found.</p>
-            ) : (
-              <ul style={styles.notesList}>
-                {notes
-                  .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-                  .slice(0, 5)
-                  .map((note) => (
-                    <li
-                      key={note.id}
-                      onClick={() => navigate(`/notes/${note.id}`)}
-                      style={styles.noteItem}
-                    >
-                      {note.title || 'Untitled Note'}
-                    </li>
-                  ))}
-              </ul>
             )}
           </section>
         </div>

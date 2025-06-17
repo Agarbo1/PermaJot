@@ -19,7 +19,7 @@ const validateNote = [
   check('notebookId')
     .exists({ checkFalsy: true })
     .withMessage('Notebook ID is required.'),
-  handleValidationErrors
+  handleValidationErrors,
 ];
 
 
@@ -31,7 +31,20 @@ router.get('/:id', requireAuth, async (req, res, next) => {
     return res.status(404).json({ message: 'Note not found' });
   }
 
-  res.json({note});
+  res.json({ note });
+});
+
+// GET /api/notes/:notebookId - Get all notes for a specific notebook
+router.get('/notebook/:notebookId', requireAuth, async (req, res) => {
+  const notes = await Note.findAll({
+    where: {
+      userId: req.user.id,
+      notebookId: req.params.notebookId,
+    },
+    order: [['updatedAt', 'DESC']],
+  });
+
+  res.json(notes);
 });
 
 // POST /api/notes - Create a new note - WORKS
@@ -44,7 +57,7 @@ router.post('/', requireAuth, validateNote, async (req, res, next) => {
     notebookId: notebookId,
   });
 
-  res.status(201).json({newNote});
+  res.status(201).json({ newNote });
 });
 
 // PUT /api/notes/:id - Update an existing note - WORKS
@@ -61,7 +74,7 @@ router.put('/:id', requireAuth, validateNote, async (req, res, next) => {
   note.notebookId = notebookId || note.notebookId;
   await note.save();
 
-  res.json({note});
+  res.json({ note });
 });
 
 // DELETE /api/notes/:id - Delete a note - WORKS
