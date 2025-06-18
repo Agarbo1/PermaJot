@@ -1,10 +1,10 @@
-import { csrfFetch } from "./csrf";
+import { csrfFetch } from './csrf';
 
-const SET_NOTEBOOKS = "notebooks/SET_NOTEBOOKS";
-const ADD_NOTEBOOK = "notebooks/ADD_NOTEBOOK";
-const SET_NOTEBOOK_NOTES = "notebooks/SET_NOTEBOOK_NOTES";
-const UPDATE_NOTEBOOK = "notebooks/UPDATE_NOTEBOOK";
-const REMOVE_NOTEBOOK = "notebooks/REMOVE_NOTEBOOK";
+const SET_NOTEBOOKS = 'notebooks/SET_NOTEBOOKS';
+const ADD_NOTEBOOK = 'notebooks/ADD_NOTEBOOK';
+const SET_NOTEBOOK_NOTES = 'notebooks/SET_NOTEBOOK_NOTES';
+const UPDATE_NOTEBOOK = 'notebooks/UPDATE_NOTEBOOK';
+const REMOVE_NOTEBOOK = 'notebooks/REMOVE_NOTEBOOK';
 
 // Action Creators
 export const setNotebooks = (notebooks) => ({
@@ -28,12 +28,12 @@ export const updateNotebook = (notebook) => ({
   notebook,
 });
 
-export const removeNotebook = (notebookId) => ({
+export const removeNotebook = (id) => ({
   type: REMOVE_NOTEBOOK,
-  notebookId,
+  id,
 });
 
-// Thunk Action Creators
+// Thunk Actions
 export const fetchNotebooks = () => async (dispatch) => {
   const res = await csrfFetch('/api/notebooks');
   if (res.ok) {
@@ -51,8 +51,8 @@ export const fetchNotebookDetails = (notebookId) => async (dispatch) => {
 };
 
 export const createNotebook = (notebook) => async (dispatch) => {
-  const response = await csrfFetch("/api/notebooks", {
-    method: "POST",
+  const response = await csrfFetch('/api/notebooks', {
+    method: 'POST',
     body: JSON.stringify(notebook),
   });
   if (response.ok) {
@@ -72,7 +72,7 @@ export const fetchNotebookNotes = (notebookId) => async (dispatch) => {
 
 export const editNotebook = (notebook) => async (dispatch) => {
   const response = await csrfFetch(`/api/notebooks/${notebook.id}`, {
-    method: "PUT",
+    method: 'PUT',
     body: JSON.stringify(notebook),
   });
   if (response.ok) {
@@ -91,29 +91,33 @@ export const deleteNotebook = (notebookId) => async (dispatch) => {
     dispatch(removeNotebook(notebookId));
   }
 };
-// Initial State
+
 const initialState = {
   notebooks: {},
   notebookNotes: {},
 };
 
-// Reducer
 const notebooksReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_NOTEBOOKS: {
-  const normalized = {};
-  if (!Array.isArray(action.notebooks)) {
-    console.error("Expected array for notebooks, got:", action.notebooks);
-    return state;
-  }
+      const normalized = {};
+      if (!Array.isArray(action.notebooks)) {
+        console.error('Expected array for notebooks, got:', action.notebooks);
+        return state;
+      }
 
-  action.notebooks.forEach(notebook => {
-    normalized[notebook.id] = notebook;
-  });
+      action.notebooks.forEach((notebook) => {
+        normalized[notebook.id] = notebook;
+      });
 
-  return { ...normalized }; // completely replace state with normalized
-}
+      return {
+        ...state,
+        notebooks: normalized,
+      };
+    }
+
     case ADD_NOTEBOOK:
+    case UPDATE_NOTEBOOK: {
       return {
         ...state,
         notebooks: {
@@ -121,6 +125,17 @@ const notebooksReducer = (state = initialState, action) => {
           [action.notebook.id]: action.notebook,
         },
       };
+    }
+
+    case REMOVE_NOTEBOOK: {
+      const newNotebooks = { ...state.notebooks };
+      delete newNotebooks[action.id];
+      return {
+        ...state,
+        notebooks: newNotebooks,
+      };
+    }
+
     case SET_NOTEBOOK_NOTES:
       return {
         ...state,
@@ -129,22 +144,11 @@ const notebooksReducer = (state = initialState, action) => {
           [action.notebookId]: action.notes,
         },
       };
-    case UPDATE_NOTEBOOK:
-      return {
-        ...state,
-        notebooks: {
-          ...state.notebooks,
-          [action.notebook.id]: action.notebook,
-        },
-      };
-    case REMOVE_NOTEBOOK: {
-      const newNotebooks = { ...state.notebooks };
-      delete newNotebooks[action.notebookId];
-      return { ...state, notebooks: newNotebooks };
-    }
+
     default:
       return state;
   }
 };
+
 
 export default notebooksReducer;

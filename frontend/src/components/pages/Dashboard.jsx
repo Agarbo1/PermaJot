@@ -8,7 +8,7 @@ import TaskSidebar from '../TaskSidebar/TaskSidebar';
 import NotebookFormModal from '../NotebookFormModal/NotebookFormModal';
 import * as sessionActions from '../../store/session';
 import * as notebookActions from '../../store/notebooks';
-import { fetchTasks, toggleTaskStatus } from '../../store/tasks';
+import { fetchTasks, createTask, toggleTaskStatus } from '../../store/tasks';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -16,7 +16,9 @@ const Dashboard = () => {
   const { setModalContent, closeModal } = useModal();
 
   const user = useSelector((state) => state.session.user);
-  const notebooks = useSelector((state) => Object.values(state.notebooks));
+  const notebooks = useSelector((state) =>
+    Object.values(state.notebooks.notebooks || {})
+  );
   const tasks = useSelector((state) => state.tasks.tasks || []);
   const notebookId = useSelector((state) => state.notebooks.currentNotebookId);
 
@@ -52,16 +54,18 @@ const Dashboard = () => {
     );
   };
 
+const handleCreateTask = (data) => {
+  dispatch(createTask(data));
+};
 
   const handleToggleTask = (taskId) => {
     dispatch(toggleTaskStatus(taskId));
   };
 
   const handleLogout = async () => {
-  await dispatch(sessionActions.logout());
-  navigate('/'); // Redirect to homepage after logout
-};
-
+    await dispatch(sessionActions.logout());
+    navigate('/'); // Redirect to homepage after logout
+  };
 
   const styles = {
     container: {
@@ -138,7 +142,7 @@ const Dashboard = () => {
       </div>
 
       <div style={styles.mainContent}>
-        <TaskSidebar tasks={tasks} onToggle={handleToggleTask} />
+        <TaskSidebar tasks={tasks} onCreate={handleCreateTask} onToggle={handleToggleTask} />
 
         <div style={styles.dashboardMain}>
           <h1>Welcome back, {user.firstName}!</h1>
@@ -146,7 +150,9 @@ const Dashboard = () => {
           <section style={styles.section}>
             <div style={styles.sectionHeader}>
               <h2>Your Notebooks</h2>
-              <button style ={styles.button} onClick={handleCreateNotebook}>Create Notebook</button>
+              <button style={styles.button} onClick={handleCreateNotebook}>
+                Create Notebook
+              </button>
             </div>
             {notebooks.length === 0 ? (
               <p>You have no notebooks yet.</p>
@@ -157,7 +163,9 @@ const Dashboard = () => {
                     key={notebook.id}
                     notebook={notebook}
                     onClick={() => navigate(`/notebooks/${notebook.id}`)}
-                    onDelete={() => dispatch(notebookActions.deleteNotebook(notebook.id))}
+                    onDelete={() =>
+                      dispatch(notebookActions.deleteNotebook(notebook.id))
+                    }
                     onEdit={handleEditNotebook}
                   />
                 ))}

@@ -1,6 +1,22 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 
 export default function TaskSidebar({ tasks = [], onToggle, onCreate }) {
+  const [showInput, setShowInput] = useState(false);
+  const [description, setDescription] = useState('');
+
+  const handleAddTask = () => {
+    if (description.trim()) {
+      onCreate({ description: description.trim() });
+      setDescription('');
+      setShowInput(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowInput(false);
+    setDescription('');
+  };
+
   const styles = {
     sidebar: {
       width: '300px',
@@ -30,6 +46,41 @@ export default function TaskSidebar({ tasks = [], onToggle, onCreate }) {
       cursor: 'pointer',
       fontSize: '0.9rem',
     },
+    inputRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      marginBottom: '1rem',
+    },
+    input: {
+      flex: 1,
+      padding: '0.3rem 0.5rem',
+      fontSize: '0.9rem',
+      border: '1px solid #ccc',
+      borderRadius: '6px',
+    },
+    plusButton: {
+      backgroundColor: '#27ae60',
+      color: 'white',
+      border: 'none',
+      borderRadius: '50%',
+      width: '32px',
+      height: '32px',
+      fontSize: '1.25rem',
+      cursor: 'pointer',
+      lineHeight: '1',
+    },
+    cancelButton: {
+      backgroundColor: '#e74c3c',
+      color: 'white',
+      border: 'none',
+      borderRadius: '50%',
+      width: '32px',
+      height: '32px',
+      fontSize: '1.25rem',
+      cursor: 'pointer',
+      lineHeight: '1',
+    },
     taskItem: {
       display: 'flex',
       alignItems: 'center',
@@ -56,12 +107,31 @@ export default function TaskSidebar({ tasks = [], onToggle, onCreate }) {
     ];
   }, [tasks]);
 
-return (
+  return (
     <aside style={styles.sidebar}>
       <div style={styles.header}>
         <span style={styles.heading}>🧠 Tasks</span>
-        <button onClick={onCreate} style={styles.createButton}>+ Task</button>
+        {!showInput && (
+          <button onClick={() => setShowInput(true)} style={styles.createButton}>
+            + Task
+          </button>
+        )}
       </div>
+
+      {showInput && (
+        <div style={styles.inputRow}>
+          <input
+            type="text"
+            placeholder="New task..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            style={styles.input}
+            autoFocus
+          />
+          <button onClick={handleAddTask} style={styles.plusButton}>+</button>
+          <button onClick={handleCancel} style={styles.cancelButton}>×</button>
+        </div>
+      )}
 
       {incompleteTasks.map((task) => (
         <div key={task.id} style={styles.taskItem}>
