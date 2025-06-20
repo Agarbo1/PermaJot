@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 
-export default function TaskSidebar({ tasks = [], onToggle, onCreate }) {
+
+export default function TaskSidebar({ tasks = [], onToggle, onCreate, onDelete }) {
   const [showInput, setShowInput] = useState(false);
   const [description, setDescription] = useState('');
 
@@ -45,6 +46,17 @@ export default function TaskSidebar({ tasks = [], onToggle, onCreate }) {
       padding: '0.3rem 0.75rem',
       cursor: 'pointer',
       fontSize: '0.9rem',
+    },
+    clearButton: {
+      backgroundColor: '#e74c3c',
+      color: 'white',
+      border: 'none',
+      borderRadius: '20px',
+      padding: '0.4rem 0.75rem',
+      marginTop: '1rem',
+      cursor: 'pointer',
+      fontSize: '0.9rem',
+      alignSelf: 'center',
     },
     inputRow: {
       display: 'flex',
@@ -98,8 +110,8 @@ export default function TaskSidebar({ tasks = [], onToggle, onCreate }) {
   };
 
   const [incompleteTasks, completedTasks] = useMemo(() => {
-    const sorted = [...tasks].sort((a, b) =>
-      new Date(a.createdAt) - new Date(b.createdAt)
+    const sorted = [...tasks].sort(
+      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
     );
     return [
       sorted.filter((t) => !t.isCompleted),
@@ -112,7 +124,10 @@ export default function TaskSidebar({ tasks = [], onToggle, onCreate }) {
       <div style={styles.header}>
         <span style={styles.heading}>🧠 Tasks</span>
         {!showInput && (
-          <button onClick={() => setShowInput(true)} style={styles.createButton}>
+          <button
+            onClick={() => setShowInput(true)}
+            style={styles.createButton}
+          >
             + Task
           </button>
         )}
@@ -128,8 +143,12 @@ export default function TaskSidebar({ tasks = [], onToggle, onCreate }) {
             style={styles.input}
             autoFocus
           />
-          <button onClick={handleAddTask} style={styles.plusButton}>+</button>
-          <button onClick={handleCancel} style={styles.cancelButton}>×</button>
+          <button onClick={handleAddTask} style={styles.plusButton}>
+            +
+          </button>
+          <button onClick={handleCancel} style={styles.cancelButton}>
+            ×
+          </button>
         </div>
       )}
 
@@ -156,6 +175,15 @@ export default function TaskSidebar({ tasks = [], onToggle, onCreate }) {
           <span style={styles.completedTask}>{task.description}</span>
         </div>
       ))}
+
+      <button
+        style={styles.clearButton}
+        onClick={() => {
+          completedTasks.forEach((task) => onDelete(task.id));
+        }}
+      >
+        Clear Completed
+      </button>
     </aside>
   );
 }

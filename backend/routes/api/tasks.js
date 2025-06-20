@@ -18,7 +18,7 @@ router.get('/', requireAuth, async (req, res) => {
   const userId = req.user.id;
 
   const tasks = await Task.findAll({
-    where: { userId },
+    where: { userId: req.user.id },
     order: [['updatedAt', 'DESC']],
   });
 
@@ -38,15 +38,14 @@ router.get('/:id', requireAuth, async (req, res, next) => {
 
 // POST /api/tasks - Create a new task - WORKS
 router.post('/', requireAuth, validateTask, async (req, res, next) => {
-  const { title, description } = req.body;
+  const { description } = req.body;
 
   const newTask = await Task.create({
-    title,
     description,
     userId: req.user.id
   });
 
-  res.status(201).json({newTask});
+  res.status(201).json(newTask);
 });
 
 // PUT /api/tasks/:id - Update an existing task - WORKS

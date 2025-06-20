@@ -32,9 +32,9 @@ export const toggleTask = (task) => ({
 export const fetchTasks = () => async (dispatch) => {
   const response = await csrfFetch('/api/tasks');
   if (response.ok) {
-    const tasks = await response.json();
-    console.log('Fetched tasks:', tasks);
-    dispatch(setTasks(tasks));
+    const data = await response.json();
+    console.log('Fetched tasks:', data.tasks);
+    dispatch(setTasks(data.tasks));
   }
 };
 export const createTask = (task) => async (dispatch) => {
@@ -44,6 +44,7 @@ export const createTask = (task) => async (dispatch) => {
   });
   if (response.ok) {
     const newTask = await response.json();
+    console.log('📝 newTask from backend:', newTask);
     dispatch(addTask(newTask));
   }
 };
@@ -58,7 +59,7 @@ export const updateTaskDetails = (task) => async (dispatch) => {
   }
 };
 export const removeTask = (taskId) => async (dispatch) => {
-  const response = await csrfFetch(`/api/tasks/${taskId}/toggle`, {
+  const response = await csrfFetch(`/api/tasks/${taskId}`, {
     method: 'DELETE',
   });
   if (response.ok) {
@@ -81,7 +82,7 @@ const tasksReducer = (state = initialState, action) => {
   console.log('🧠 tasksReducer received state:', state, 'action:', action);
   switch (action.type) {
     case SET_TASKS:
-      return action.tasks; // should be an array
+      return action.tasks;
     case ADD_TASK:
       return [...state, action.task];
     case UPDATE_TASK:

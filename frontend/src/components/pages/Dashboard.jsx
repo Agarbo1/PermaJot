@@ -8,7 +8,7 @@ import TaskSidebar from '../TaskSidebar/TaskSidebar';
 import NotebookFormModal from '../NotebookFormModal/NotebookFormModal';
 import * as sessionActions from '../../store/session';
 import * as notebookActions from '../../store/notebooks';
-import { fetchTasks, createTask, toggleTaskStatus } from '../../store/tasks';
+import { fetchTasks, createTask, toggleTaskStatus, removeTask } from '../../store/tasks';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,8 @@ const Dashboard = () => {
   const notebooks = useSelector((state) =>
     Object.values(state.notebooks.notebooks || {})
   );
-  const tasks = useSelector((state) => state.tasks.tasks || []);
+  const tasks = useSelector((state) => state.tasks || []);
+  console.log('💬 tasks from useSelector:', tasks);
   const notebookId = useSelector((state) => state.notebooks.currentNotebookId);
 
   useEffect(() => {
@@ -54,12 +55,16 @@ const Dashboard = () => {
     );
   };
 
-const handleCreateTask = (data) => {
-  dispatch(createTask(data));
-};
+  const handleCreateTask = (data) => {
+    dispatch(createTask(data));
+  };
 
   const handleToggleTask = (taskId) => {
     dispatch(toggleTaskStatus(taskId));
+  };
+
+  const handleDeleteTask = (taskId) => {
+    dispatch(removeTask(taskId));
   };
 
   const handleLogout = async () => {
@@ -142,7 +147,12 @@ const handleCreateTask = (data) => {
       </div>
 
       <div style={styles.mainContent}>
-        <TaskSidebar tasks={tasks} onCreate={handleCreateTask} onToggle={handleToggleTask} />
+        <TaskSidebar
+          tasks={tasks}
+          onCreate={handleCreateTask}
+          onToggle={handleToggleTask}
+          onDelete={handleDeleteTask}
+        />
 
         <div style={styles.dashboardMain}>
           <h1>Welcome back, {user.firstName}!</h1>
