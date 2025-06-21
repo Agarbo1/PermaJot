@@ -155,7 +155,7 @@ const Dashboard = () => {
         />
 
         <div style={styles.dashboardMain}>
-          <h1>Welcome back, {user.firstName}!</h1>
+          <h1>Welcome to your Dashboard!</h1>
 
           <section style={styles.section}>
             <div style={styles.sectionHeader}>
